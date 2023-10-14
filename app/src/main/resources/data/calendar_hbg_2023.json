@@ -1,0 +1,996 @@
+[
+  {
+    "date": "20231004",
+    "kind": "Bio",
+    "rm": "A",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231005",
+    "kind": "Gelbe Tonne",
+    "rm": null,
+    "p": null,
+    "gs": null
+  },
+  {
+    "date": "20231005",
+    "kind": "Papier 2-w\u00f6chig",
+    "rm": null,
+    "p": null,
+    "gs": null
+  },
+  {
+    "date": "20231005",
+    "kind": "Papier 4-w\u00f6chig",
+    "rm": null,
+    "p": null,
+    "gs": null
+  },
+  {
+    "date": "20231005",
+    "kind": "Bio",
+    "rm": "A",
+    "p": "B",
+    "gs": "A"
+  },
+  {
+    "date": "20231009",
+    "kind": "Restm\u00fcll halbj\u00e4hrig",
+    "rm": "A",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231009",
+    "kind": "Papier 8-w\u00f6chig",
+    "rm": "A",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231009",
+    "kind": "Restm\u00fcll halbj\u00e4hrig",
+    "rm": "A",
+    "p": "B",
+    "gs": "A"
+  },
+  {
+    "date": "20231009",
+    "kind": "Papier 8-w\u00f6chig",
+    "rm": "B",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231009",
+    "kind": "Papier 8-w\u00f6chig",
+    "rm": "C",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231009",
+    "kind": "Papier 8-w\u00f6chig",
+    "rm": "D",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231009",
+    "kind": "Restm\u00fcll halbj\u00e4hrig",
+    "rm": "A",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231009",
+    "kind": "Papier 8-w\u00f6chig",
+    "rm": "B",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231009",
+    "kind": "Papier 8-w\u00f6chig",
+    "rm": "C",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231009",
+    "kind": "Restm\u00fcll halbj\u00e4hrig",
+    "rm": "A",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231009",
+    "kind": "Papier 8-w\u00f6chig",
+    "rm": "A",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231010",
+    "kind": "Papier 8-w\u00f6chig",
+    "rm": "A",
+    "p": "B",
+    "gs": "A"
+  },
+  {
+    "date": "20231010",
+    "kind": "Papier 8-w\u00f6chig",
+    "rm": "B",
+    "p": "B",
+    "gs": "A"
+  },
+  {
+    "date": "20231010",
+    "kind": "Papier 8-w\u00f6chig",
+    "rm": "C",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231010",
+    "kind": "Papier 8-w\u00f6chig",
+    "rm": "D",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231010",
+    "kind": "Papier 8-w\u00f6chig",
+    "rm": "A",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231010",
+    "kind": "Papier 8-w\u00f6chig",
+    "rm": "B",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231011",
+    "kind": "Bio",
+    "rm": "A",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231011",
+    "kind": "Restm\u00fcll halbj\u00e4hrig",
+    "rm": "B",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231011",
+    "kind": "Restm\u00fcll halbj\u00e4hrig",
+    "rm": "B",
+    "p": "B",
+    "gs": "A"
+  },
+  {
+    "date": "20231011",
+    "kind": "Restm\u00fcll halbj\u00e4hrig",
+    "rm": "B",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231011",
+    "kind": "Restm\u00fcll halbj\u00e4hrig",
+    "rm": "B",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231012",
+    "kind": "Bio",
+    "rm": "A",
+    "p": "B",
+    "gs": "A"
+  },
+  {
+    "date": "20231012",
+    "kind": "Restm\u00fcll halbj\u00e4hrig",
+    "rm": "C",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231012",
+    "kind": "Restm\u00fcll halbj\u00e4hrig",
+    "rm": "C",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231012",
+    "kind": "Restm\u00fcll halbj\u00e4hrig",
+    "rm": "C",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231013",
+    "kind": "Restm\u00fcll halbj\u00e4hrig",
+    "rm": "D",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231013",
+    "kind": "Restm\u00fcll halbj\u00e4hrig",
+    "rm": "D",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231018",
+    "kind": "Bio",
+    "rm": "A",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231019",
+    "kind": "Gelbe Tonne",
+    "rm": null,
+    "p": null,
+    "gs": null
+  },
+  {
+    "date": "20231019",
+    "kind": "Papier 2-w\u00f6chig",
+    "rm": null,
+    "p": null,
+    "gs": null
+  },
+  {
+    "date": "20231019",
+    "kind": "Bio",
+    "rm": "A",
+    "p": "B",
+    "gs": "A"
+  },
+  {
+    "date": "20231024",
+    "kind": "Gelber Sack",
+    "rm": "A",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231024",
+    "kind": "Gelber Sack",
+    "rm": "A",
+    "p": "B",
+    "gs": "A"
+  },
+  {
+    "date": "20231024",
+    "kind": "Gelber Sack",
+    "rm": "B",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231024",
+    "kind": "Gelber Sack",
+    "rm": "B",
+    "p": "B",
+    "gs": "A"
+  },
+  {
+    "date": "20231024",
+    "kind": "Gelber Sack",
+    "rm": "C",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231025",
+    "kind": "Bio",
+    "rm": "A",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231025",
+    "kind": "Gelber Sack",
+    "rm": "C",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231025",
+    "kind": "Gelber Sack",
+    "rm": "C",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231025",
+    "kind": "Gelber Sack",
+    "rm": "D",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231025",
+    "kind": "Gelber Sack",
+    "rm": "D",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231025",
+    "kind": "Gelber Sack",
+    "rm": "A",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231025",
+    "kind": "Gelber Sack",
+    "rm": "B",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231025",
+    "kind": "Gelber Sack",
+    "rm": "B",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231025",
+    "kind": "Gelber Sack",
+    "rm": "A",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231027",
+    "kind": "Bio",
+    "rm": "A",
+    "p": "B",
+    "gs": "A"
+  },
+  {
+    "date": "20231102",
+    "kind": "Gelbe Tonne",
+    "rm": null,
+    "p": null,
+    "gs": null
+  },
+  {
+    "date": "20231102",
+    "kind": "Papier 2-w\u00f6chig",
+    "rm": null,
+    "p": null,
+    "gs": null
+  },
+  {
+    "date": "20231102",
+    "kind": "Papier 4-w\u00f6chig",
+    "rm": null,
+    "p": null,
+    "gs": null
+  },
+  {
+    "date": "20231102",
+    "kind": "Bio",
+    "rm": "A",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231103",
+    "kind": "Bio",
+    "rm": "A",
+    "p": "B",
+    "gs": "A"
+  },
+  {
+    "date": "20231106",
+    "kind": "Restm\u00fcll 4-w\u00f6chig",
+    "rm": "A",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231106",
+    "kind": "Restm\u00fcll 4-w\u00f6chig",
+    "rm": "A",
+    "p": "B",
+    "gs": "A"
+  },
+  {
+    "date": "20231106",
+    "kind": "Restm\u00fcll 4-w\u00f6chig",
+    "rm": "A",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231106",
+    "kind": "Restm\u00fcll 4-w\u00f6chig",
+    "rm": "A",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231108",
+    "kind": "Bio",
+    "rm": "A",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231108",
+    "kind": "Restm\u00fcll 4-w\u00f6chig",
+    "rm": "B",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231108",
+    "kind": "Restm\u00fcll 4-w\u00f6chig",
+    "rm": "B",
+    "p": "B",
+    "gs": "A"
+  },
+  {
+    "date": "20231108",
+    "kind": "Restm\u00fcll 4-w\u00f6chig",
+    "rm": "B",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231108",
+    "kind": "Restm\u00fcll 4-w\u00f6chig",
+    "rm": "B",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231109",
+    "kind": "Bio",
+    "rm": "A",
+    "p": "B",
+    "gs": "A"
+  },
+  {
+    "date": "20231109",
+    "kind": "Restm\u00fcll 4-w\u00f6chig",
+    "rm": "C",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231109",
+    "kind": "Restm\u00fcll 4-w\u00f6chig",
+    "rm": "C",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231109",
+    "kind": "Restm\u00fcll 4-w\u00f6chig",
+    "rm": "C",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231110",
+    "kind": "Restm\u00fcll 4-w\u00f6chig",
+    "rm": "D",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231110",
+    "kind": "Restm\u00fcll 4-w\u00f6chig",
+    "rm": "D",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231115",
+    "kind": "Bio",
+    "rm": "A",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231116",
+    "kind": "Gelbe Tonne",
+    "rm": null,
+    "p": null,
+    "gs": null
+  },
+  {
+    "date": "20231116",
+    "kind": "Papier 2-w\u00f6chig",
+    "rm": null,
+    "p": null,
+    "gs": null
+  },
+  {
+    "date": "20231116",
+    "kind": "Bio",
+    "rm": "A",
+    "p": "B",
+    "gs": "A"
+  },
+  {
+    "date": "20231121",
+    "kind": "Gelber Sack",
+    "rm": "A",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231121",
+    "kind": "Gelber Sack",
+    "rm": "A",
+    "p": "B",
+    "gs": "A"
+  },
+  {
+    "date": "20231121",
+    "kind": "Gelber Sack",
+    "rm": "B",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231121",
+    "kind": "Gelber Sack",
+    "rm": "B",
+    "p": "B",
+    "gs": "A"
+  },
+  {
+    "date": "20231121",
+    "kind": "Gelber Sack",
+    "rm": "C",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231122",
+    "kind": "Gelber Sack",
+    "rm": "C",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231122",
+    "kind": "Gelber Sack",
+    "rm": "C",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231122",
+    "kind": "Gelber Sack",
+    "rm": "D",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231122",
+    "kind": "Gelber Sack",
+    "rm": "D",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231122",
+    "kind": "Gelber Sack",
+    "rm": "A",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231122",
+    "kind": "Gelber Sack",
+    "rm": "B",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231122",
+    "kind": "Gelber Sack",
+    "rm": "B",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231122",
+    "kind": "Gelber Sack",
+    "rm": "A",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231129",
+    "kind": "Bio",
+    "rm": "A",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231130",
+    "kind": "Gelbe Tonne",
+    "rm": null,
+    "p": null,
+    "gs": null
+  },
+  {
+    "date": "20231130",
+    "kind": "Papier 2-w\u00f6chig",
+    "rm": null,
+    "p": null,
+    "gs": null
+  },
+  {
+    "date": "20231130",
+    "kind": "Papier 4-w\u00f6chig",
+    "rm": null,
+    "p": null,
+    "gs": null
+  },
+  {
+    "date": "20231130",
+    "kind": "Bio",
+    "rm": "A",
+    "p": "B",
+    "gs": "A"
+  },
+  {
+    "date": "20231204",
+    "kind": "Papier 8-w\u00f6chig",
+    "rm": "A",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231204",
+    "kind": "Restm\u00fcll 4-w\u00f6chig",
+    "rm": "A",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231204",
+    "kind": "Restm\u00fcll 4-w\u00f6chig",
+    "rm": "A",
+    "p": "B",
+    "gs": "A"
+  },
+  {
+    "date": "20231204",
+    "kind": "Papier 8-w\u00f6chig",
+    "rm": "B",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231204",
+    "kind": "Papier 8-w\u00f6chig",
+    "rm": "C",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231204",
+    "kind": "Papier 8-w\u00f6chig",
+    "rm": "D",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231204",
+    "kind": "Restm\u00fcll 4-w\u00f6chig",
+    "rm": "A",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231204",
+    "kind": "Papier 8-w\u00f6chig",
+    "rm": "B",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231204",
+    "kind": "Papier 8-w\u00f6chig",
+    "rm": "C",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231204",
+    "kind": "Papier 8-w\u00f6chig",
+    "rm": "A",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231204",
+    "kind": "Restm\u00fcll 4-w\u00f6chig",
+    "rm": "A",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231205",
+    "kind": "Papier 8-w\u00f6chig",
+    "rm": "A",
+    "p": "B",
+    "gs": "A"
+  },
+  {
+    "date": "20231205",
+    "kind": "Papier 8-w\u00f6chig",
+    "rm": "B",
+    "p": "B",
+    "gs": "A"
+  },
+  {
+    "date": "20231205",
+    "kind": "Papier 8-w\u00f6chig",
+    "rm": "C",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231205",
+    "kind": "Papier 8-w\u00f6chig",
+    "rm": "D",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231205",
+    "kind": "Papier 8-w\u00f6chig",
+    "rm": "A",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231205",
+    "kind": "Papier 8-w\u00f6chig",
+    "rm": "B",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231206",
+    "kind": "Restm\u00fcll 4-w\u00f6chig",
+    "rm": "B",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231206",
+    "kind": "Restm\u00fcll 4-w\u00f6chig",
+    "rm": "B",
+    "p": "B",
+    "gs": "A"
+  },
+  {
+    "date": "20231206",
+    "kind": "Restm\u00fcll 4-w\u00f6chig",
+    "rm": "B",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231206",
+    "kind": "Restm\u00fcll 4-w\u00f6chig",
+    "rm": "B",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231207",
+    "kind": "Restm\u00fcll 4-w\u00f6chig",
+    "rm": "C",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231207",
+    "kind": "Restm\u00fcll 4-w\u00f6chig",
+    "rm": "C",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231207",
+    "kind": "Restm\u00fcll 4-w\u00f6chig",
+    "rm": "D",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231207",
+    "kind": "Restm\u00fcll 4-w\u00f6chig",
+    "rm": "D",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231207",
+    "kind": "Restm\u00fcll 4-w\u00f6chig",
+    "rm": "C",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231213",
+    "kind": "Bio",
+    "rm": "A",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231214",
+    "kind": "Gelbe Tonne",
+    "rm": null,
+    "p": null,
+    "gs": null
+  },
+  {
+    "date": "20231214",
+    "kind": "Papier 2-w\u00f6chig",
+    "rm": null,
+    "p": null,
+    "gs": null
+  },
+  {
+    "date": "20231214",
+    "kind": "Bio",
+    "rm": "A",
+    "p": "B",
+    "gs": "A"
+  },
+  {
+    "date": "20231219",
+    "kind": "Gelber Sack",
+    "rm": "A",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231219",
+    "kind": "Gelber Sack",
+    "rm": "A",
+    "p": "B",
+    "gs": "A"
+  },
+  {
+    "date": "20231219",
+    "kind": "Gelber Sack",
+    "rm": "B",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231219",
+    "kind": "Gelber Sack",
+    "rm": "B",
+    "p": "B",
+    "gs": "A"
+  },
+  {
+    "date": "20231219",
+    "kind": "Gelber Sack",
+    "rm": "C",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231220",
+    "kind": "Gelber Sack",
+    "rm": "C",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231220",
+    "kind": "Gelber Sack",
+    "rm": "C",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231220",
+    "kind": "Gelber Sack",
+    "rm": "D",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231220",
+    "kind": "Gelber Sack",
+    "rm": "D",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231220",
+    "kind": "Gelber Sack",
+    "rm": "A",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231220",
+    "kind": "Gelber Sack",
+    "rm": "B",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231220",
+    "kind": "Gelber Sack",
+    "rm": "B",
+    "p": "B",
+    "gs": "B"
+  },
+  {
+    "date": "20231220",
+    "kind": "Gelber Sack",
+    "rm": "A",
+    "p": "A",
+    "gs": "B"
+  },
+  {
+    "date": "20231228",
+    "kind": "Gelbe Tonne",
+    "rm": null,
+    "p": null,
+    "gs": null
+  },
+  {
+    "date": "20231228",
+    "kind": "Papier 2-w\u00f6chig",
+    "rm": null,
+    "p": null,
+    "gs": null
+  },
+  {
+    "date": "20231228",
+    "kind": "Papier 4-w\u00f6chig",
+    "rm": null,
+    "p": null,
+    "gs": null
+  },
+  {
+    "date": "20231228",
+    "kind": "Bio",
+    "rm": "A",
+    "p": "A",
+    "gs": "A"
+  },
+  {
+    "date": "20231228",
+    "kind": "Bio",
+    "rm": "A",
+    "p": "B",
+    "gs": "A"
+  }
+]
