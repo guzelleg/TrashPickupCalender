@@ -9,5 +9,6 @@ data class DatedCalendarItem(
     val gs: String?,
     val kind: String,
     val p: String?,
-    val rm: String?
+    val rm: String?,
+    val townId:String
 )

@@ -72,4 +72,6 @@ dependencies {
     implementation("com.kizitonwose.calendar:compose:2.3.0")
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
     implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.3.9")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
 }

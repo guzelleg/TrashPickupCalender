@@ -12,11 +12,14 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,6 +30,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -41,9 +45,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.guzel1018.trashpickupcalender.model.DatedCalendarItem
 import com.guzel1018.trashpickupcalender.ui.theme.TrashPickupCalenderTheme
-import com.guzel1018.trashpickupcalender.utils.DataTransformations.transform
+import com.guzel1018.trashpickupcalender.utils.DataTransformations.getCalendarItems
 import com.guzel1018.trashpickupcalender.utils.displayText
+import com.guzel1018.trashpickupcalender.utils.getHainburgEvents
+import com.guzel1018.trashpickupcalender.utils.getHainburgEventsPerRegion
+import com.guzel1018.trashpickupcalender.utils.getTowns
+import com.kizitonwose.calendar.compose.ContentHeightMode
 import com.kizitonwose.calendar.compose.HorizontalCalendar
 import com.kizitonwose.calendar.compose.rememberCalendarState
 import com.kizitonwose.calendar.core.CalendarDay
@@ -58,7 +67,6 @@ import java.time.YearMonth
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        transform()
         super.onCreate(savedInstanceState)
         setContent {
             TrashPickupCalenderTheme {
@@ -72,6 +80,8 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+private val trashEvents = getHainburgEventsPerRegion("B", "A", "A")
+    .groupBy { it.date}
 
 @Composable
 fun MainScreen(adjacentMonths: Long = 500) {
@@ -111,15 +121,11 @@ fun MainScreen(adjacentMonths: Long = 500) {
         )
         HorizontalCalendar(
             modifier = Modifier.testTag("Calendar"),
+            contentHeightMode = ContentHeightMode.Fill,
             state = state,
             dayContent = { day ->
-                Day(day, isSelected = selections.contains(day)) { clicked ->
-                    if (selections.contains(clicked)) {
-                        selections.remove(clicked)
-                    } else {
-                        selections.add(clicked)
-                    }
-                }
+                Day(day, isSelected = selections.contains(day), trashEvents[day.date])
+                {}
             },
             monthHeader = {
                 MonthHeader(daysOfWeek = daysOfWeek)
@@ -148,13 +154,13 @@ private fun MonthHeader(daysOfWeek: List<DayOfWeek>) {
 }
 
 @Composable
-private fun Day(day: CalendarDay, isSelected: Boolean, onClick: (CalendarDay) -> Unit) {
+private fun Day(day: CalendarDay, isSelected: Boolean, events: List<DatedCalendarItem>?, onClick: (CalendarDay) -> Unit) {
     Box(
         modifier = Modifier
-            .aspectRatio(1f) // This is important for square-sizing!
+            //.aspectRatio(1f) // This is important for square-sizing!
             .testTag("MonthDay")
             .padding(6.dp)
-            .clip(CircleShape)
+            // .clip(CircleShape)
             .background(color = if (isSelected) colorResource(R.color.example_1_selection_color) else Color.Transparent)
             .clickable(
                 enabled = day.position == DayPosition.MonthDate,
@@ -168,105 +174,48 @@ private fun Day(day: CalendarDay, isSelected: Boolean, onClick: (CalendarDay) ->
             DayPosition.MonthDate -> if (isSelected) Color.White else Color.Unspecified
             DayPosition.InDate, DayPosition.OutDate -> colorResource(R.color.inactive_text_color)
         }
-        Column {
+        Column(modifier = Modifier.fillMaxHeight()) {
             Text(
                 text = day.date.dayOfMonth.toString(),
                 color = textColor,
                 fontSize = 20.sp,
             )
-            Text(text = "Papier", fontSize = 12.sp, color = textColor,)
+            Column {
+                if (events != null) {
+                    for (event in events) {
+                        Text(text = getNameAbbreviation(event.kind),
+                            fontSize = 18.sp,
+                            color = textColor,
+                            modifier = Modifier.background(getBackgroundColor(event.kind)))
+                    }
+                }
+            }
         }
     }
 }
 
-@Composable
-fun TrashTypeChips(
-    chips: ImmutableList<ChipData>,
-    modifier: Modifier = Modifier,
-    itemContent: @Composable (item: ChipData, index: Int) -> Unit,
-) {
-    LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = modifier.padding(start = 5.dp, end = 5.dp),
-        contentPadding = PaddingValues(10.dp),
-    )
-    {
-        itemsIndexed(chips) { index, item -> itemContent(item, index) }
+fun getNameAbbreviation(fullName: String): String {
+    return when (fullName) {
+        "Bio" -> "bio"
+        "Gelbe Tonne" -> "GbT"
+        "Papier 2-wöchig" -> "P2W"
+        "Papier 4-wöchig" -> "P4W"
+        "Papier 8-wöchig" -> "P8W"
+        "Restmüll halbjährig" -> "RHb"
+        "Restmüll 4-wöchig" -> "R4W"
+        "Gelber Sack" -> "GS"
+        else -> ""
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun Chip(data: ChipData,
-         isSelected: Boolean,
-         onClick: () -> Unit,
-         ) {
-    Surface(
-        color = if (isSelected) Color.Transparent else data.color,
-        shape = RoundedCornerShape(8.dp),
-        border = BorderStroke(
-            width = 1.dp,
-            color = Color.DarkGray,
-        ),
-        onClick = onClick,
-    ) {
-        Row(
-            modifier = Modifier.padding(
-                vertical = 6.dp,
-                horizontal = 10.dp,
-            ),
-        ) {
-            Text(
-                text = data.text
-            )
-        }
+fun getBackgroundColor(name:String): Color {
+    return when(name){
+        "Bio" -> Color.Green
+        "Gelbe Tonne", "Gelber Sack" -> Color.Yellow
+        "Papier 2-wöchig", "Papier 4-wöchig", "Papier 8-wöchig" -> Color.Red
+        "Restm\u00fcll 4-w\u00f6chig"  -> Color.Gray
+        else -> Color.White
     }
-
-}
-
-@Composable
-fun DetailsCard(text: String) {
-    Card (
-        shape = RoundedCornerShape(2.dp),
-        elevation = CardDefaults.cardElevation(4.dp),
-        colors = CardDefaults.cardColors(Color.White),
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 20.dp)
-    ){
-        Text(text = text, fontSize = 34.sp )
-        Text(text = "All Available dates:", fontSize = 25.sp)
-        Spacer(modifier = Modifier.height(5.dp))
-        Column {
-            Text(text = "30.05", fontSize = 20.sp)
-            Text(text = "30.08", fontSize = 20.sp)
-            Text(text = "30.09", fontSize = 20.sp)
-        }
-
-    }
-
-}
-
-data class ChipData (
-    val text: String,
-    val contentDescription: String = text,
-    val color: Color
-)
-
-data class CalendarEvent(
-    val event: TrashKind,
-    val calendarDay: CalendarDay
-)
-
-enum class TrashKind (val trashName: String){
-    BIO("Bio"),
-    GELBE_TONNE("Gelbe Tonne"),
-    PAPER_2WEEKS ("Papier 2-w\u00f6chig"),
-    PAPER_4WEEKS("Papier 4-w\u00f6chig"),
-    PAPIER_8WEEKS("Papier 8-w\u00f6chig"),
-    RESTMUELL_HALF_YEAR( "Restm\u00fcll halbj\u00e4hrig"),
-    RESTMUELL_4WEEKS("Restm\u00fcll 4-w\u00f6chig"),
-    GELBE_SACK("Gelber Sack")
 }
 
 @Preview(showBackground = true)

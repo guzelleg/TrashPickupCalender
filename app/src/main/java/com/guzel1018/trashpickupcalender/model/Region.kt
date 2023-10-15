@@ -3,11 +3,9 @@ package com.guzel1018.trashpickupcalender.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CalendarItem(
-    val date: String,
+data class Region(
     val gs: String?,
-    val kind: String,
+    val name: String,
     val p: String?,
-    val rm: String?,
-    val town_id: String
+    val rm: String?
 )
