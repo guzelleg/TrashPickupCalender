@@ -3,10 +3,12 @@ package com.guzel1018.trashpickupcalender
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.guzel1018.trashpickupcalender.model.Town
+import com.guzel1018.trashpickupcalender.utils.getTowns
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.stateIn
 
 class MainViewModel : ViewModel() {
@@ -16,8 +18,10 @@ class MainViewModel : ViewModel() {
     private val _isSearching = MutableStateFlow(false)
     val isSearching = _isSearching.asStateFlow()
 
-    private val _towns = MutableStateFlow(listOf<Town>())
-    val towns = searchText.combine(_towns) { text, towns ->
+    private val _towns = MutableStateFlow(getTowns())
+    val towns = searchText
+        .debounce(500L)
+        .combine(_towns) { text, towns ->
         if (text.isBlank()) {
             towns
         } else towns.filter { it.doesMatchSearchQuery(text) }

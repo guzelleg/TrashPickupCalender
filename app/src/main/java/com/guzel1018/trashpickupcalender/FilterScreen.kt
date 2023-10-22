@@ -1,5 +1,6 @@
 package com.guzel1018.trashpickupcalender
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -17,8 +19,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
@@ -29,13 +33,11 @@ fun TownNameTextField(label: String) {
     val searchText by viewModel.searchText.collectAsState()
     val towns by viewModel.towns.collectAsState()
     val isSearching by viewModel.isSearching.collectAsState()
-
-    var text by remember { mutableStateOf(TextFieldValue("")) }
     Column (
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-    ){
+    ) {
         OutlinedTextField(
             value = searchText,
             label = { Text(text = label) },
@@ -44,13 +46,36 @@ fun TownNameTextField(label: String) {
         )
 
         Spacer(modifier = Modifier.height(16.dp))
-        LazyColumn(modifier = Modifier
-            .fillMaxWidth()
-            .weight(1f)
-        ){
-            items(towns){
-                town -> Text(text = town.name)
+        if (isSearching) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
+                items(towns) { town ->
+                    Text(text = town.name,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(vertical = 16.dp)
+                            .clickable {
+
+                            }
+                    )
+                }
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun PreviewFilter() {
+    TownNameTextField("Towns")
+
 }
