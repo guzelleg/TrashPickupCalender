@@ -74,4 +74,5 @@ dependencies {
     implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.4")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation("androidx.navigation:navigation-compose:2.4.0")
 }

@@ -18,15 +18,18 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.guzel1018.trashpickupcalender.MainViewModel
 import com.guzel1018.trashpickupcalender.clickable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TownNameTextField(label: String) {
+fun FilterScreen(label: String,
+                 navController: NavController) {
     val viewModel = viewModel<MainViewModel>()
     val searchText by viewModel.searchText.collectAsState()
     val towns by viewModel.towns.collectAsState()
@@ -62,7 +65,7 @@ fun TownNameTextField(label: String) {
                             .fillMaxSize()
                             .padding(vertical = 16.dp)
                             .clickable {
-
+                                navController.navigate(route = "MainScreen")
                             }
                     )
                 }
@@ -74,6 +77,5 @@ fun TownNameTextField(label: String) {
 @Preview
 @Composable
 fun PreviewFilter() {
-    TownNameTextField("Towns")
-
+    FilterScreen("Towns", NavController(context = LocalContext.current))
 }

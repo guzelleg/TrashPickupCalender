@@ -28,7 +28,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.guzel1018.trashpickupcalender.model.DatedCalendarItem
+import com.guzel1018.trashpickupcalender.ui.FilterScreen
 import com.guzel1018.trashpickupcalender.ui.theme.TrashPickupCalenderTheme
 import com.guzel1018.trashpickupcalender.utils.displayText
 import com.guzel1018.trashpickupcalender.utils.getHainburgEventsPerRegion
@@ -48,13 +52,22 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val navController = rememberNavController()
+            NavHost(navController = navController, startDestination = "FilterScreen"){
+                composable (route = "FilterScreen") {
+                    FilterScreen("Towns", navController = navController)
+                }
+                composable (route = "MainScreen") {
+                    MainScreen()
+                }
+            }
             TrashPickupCalenderTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Column {
-                        MainScreen()
+                        FilterScreen(label = "Towns", navController = navController)
                     }
                 }
             }
