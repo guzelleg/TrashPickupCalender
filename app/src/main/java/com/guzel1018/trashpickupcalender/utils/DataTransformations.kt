@@ -3,6 +3,7 @@ package com.guzel1018.trashpickupcalender.utils
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.commons.io.IOUtils
 import com.guzel1018.trashpickupcalender.model.CalendarItem
 import com.guzel1018.trashpickupcalender.model.DatedCalendarItem
+import com.guzel1018.trashpickupcalender.model.Region
 import com.guzel1018.trashpickupcalender.model.Town
 import com.guzel1018.trashpickupcalender.utils.DataTransformations.getCalendarItems
 import kotlinx.serialization.decodeFromString
@@ -40,8 +41,34 @@ fun getTowns(): List<Town> {
     return Json.decodeFromString(resourceAsString)
 }
 
+fun getRegions(town:Town) : List<Region> {
+   val selectedTown = getTowns().first {
+       it == town
+   }
+    return selectedTown.regions
+}
+
 fun getHainburgEvents(): List<DatedCalendarItem> {
     return getCalendarItems().filter { it.townId == "30710" }
+}
+
+fun getEventsByTown(town:Town): List<DatedCalendarItem> {
+    return getCalendarItems().filter { it.townId == town.town_id }
+}
+
+fun getEventsByTownAndRegion(town:Town, region: Region) : List<DatedCalendarItem> {
+   return getEventsByTown(town)
+        .filter { it.rm == region.rm && it.p == region.p && it.gs == region.gs}
+        .map {
+            DatedCalendarItem(
+                gs = it.gs,
+                kind = it.kind,
+                p = it.p,
+                rm = it.rm,
+                date = it.date,
+                townId = it.townId
+            )
+        }
 }
 
 fun getHainburgEventsPerRegion(
