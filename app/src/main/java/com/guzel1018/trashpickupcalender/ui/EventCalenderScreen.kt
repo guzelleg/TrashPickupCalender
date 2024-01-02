@@ -178,12 +178,10 @@ private fun Day(
             .testTag("MonthDay")
             .background(color = Color.Transparent)
             .clickable(
-                enabled = day.position == DayPosition.MonthDate,
                 onClick = { onClick(day) }),
         contentAlignment = Alignment.TopCenter,
     ) {
         val textColor = when (day.position) {
-            // Color.Unspecified will use the default text color from the current theme
             DayPosition.MonthDate -> Color.Unspecified
             DayPosition.InDate, DayPosition.OutDate -> colorResource(R.color.inactive_text_color)
         }
@@ -217,7 +215,7 @@ fun getNameAbbreviation(fullName: String): String {
         "Papier 4-wöchig" -> "P4W"
         "Papier 8-wöchig", "Papier 8-w\u00f6chig, Gebiet A", "Papier 8-w\u00f6chig, Gebiet B" -> "P8W"
         "Restmüll halbjährig" -> "RHb"
-        "Restm\u00fcll 4-w\u00f6chig in Zone Margarethen am Moos","Restmüll 4-wöchig", "Restm\u00fcll 4-w\u00f6chig", "Restm\u00fcll 4-w\u00f6chig in Zone Enzersdorf", -> "R4W"
+        "Restm\u00fcll 4-w\u00f6chig in Zone Margarethen am Moos","Restmüll 4-wöchig", "Restm\u00fcll 4-w\u00f6chig in Zone Enzersdorf" -> "R4W"
         "Restm\u00fcll 2-w\u00f6chig halbj\u00e4hrig, Wilfleinsdorf" -> "R2W"
         "Restm\u00fcll 2-w\u00f6chig", "Restm\u00fcll 2-w\u00f6chig halbj\u00e4hrig", "Restm\u00fcll 2-w\u00f6chig, Wilfleinsdorf" -> "R2W"
         "Restm\u00fcll 1-w\u00f6chig" -> "R1W"
