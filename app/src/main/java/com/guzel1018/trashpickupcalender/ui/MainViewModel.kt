@@ -2,6 +2,7 @@ package com.guzel1018.trashpickupcalender.ui
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.guzel1018.trashpickupcalender.model.Town
 import com.guzel1018.trashpickupcalender.utils.getTowns
@@ -16,6 +17,7 @@ import com.guzel1018.trashpickupcalender.model.DatedCalendarItem
 import com.guzel1018.trashpickupcalender.model.Region
 import com.guzel1018.trashpickupcalender.service.AddressService
 import com.guzel1018.trashpickupcalender.utils.getRegions
+import com.kizitonwose.calendar.core.CalendarDay
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -38,7 +40,16 @@ class MainViewModel @Inject constructor (
     private val _searchUiState = MutableStateFlow(SearchUiState())
     val searchUiState: StateFlow<SearchUiState> = _searchUiState.asStateFlow()
 
-    private val _towns = MutableStateFlow(getTowns())
+    val savedAddress = addressService.getAddressFromDataStore().asLiveData()
+
+    private val _selectedDay: MutableStateFlow<CalendarDay?> = MutableStateFlow(null)
+    val selectedDay = _selectedDay.asStateFlow()
+
+    fun setSelectedDay(day:CalendarDay?){
+        _selectedDay.value = day
+    }
+
+    val _towns = MutableStateFlow(getTowns())
     val towns = searchText
         .debounce(500L)
         .combine(_towns) { text, towns ->
@@ -81,8 +92,16 @@ class MainViewModel @Inject constructor (
         _searchText.value = text
     }
 
+    fun onStreetSearchTextChange(text: String) {
+        _searchStreetText.value = text
+    }
+
     fun clearSearchText() {
         _searchText.value = ""
+    }
+
+    fun clearStreetSearchText() {
+        _searchStreetText.value = ""
     }
 
     fun setSelectedTown(selectedTown: Town) {

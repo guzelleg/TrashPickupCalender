@@ -1,6 +1,7 @@
 package com.guzel1018.trashpickupcalender.utils
 
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.commons.io.IOUtils
+import com.guzel1018.trashpickupcalender.data.UserAddress
 import com.guzel1018.trashpickupcalender.model.CalendarItem
 import com.guzel1018.trashpickupcalender.model.DatedCalendarItem
 import com.guzel1018.trashpickupcalender.model.Region
@@ -48,10 +49,6 @@ fun getRegions(town:Town) : List<Region> {
     return selectedTown.regions
 }
 
-fun getHainburgEvents(): List<DatedCalendarItem> {
-    return getCalendarItems().filter { it.townId == "30710" }
-}
-
 fun getEventsByTown(town:Town): List<DatedCalendarItem> {
     return getCalendarItems().filter { it.townId == town.town_id }
 }
@@ -71,23 +68,14 @@ fun getEventsByTownAndRegion(town:Town, region: Region) : List<DatedCalendarItem
         }
 }
 
-fun getHainburgEventsPerRegion(
-    filterRm: String,
-    filterP: String,
-    filterGs: String
-): List<DatedCalendarItem> {
-    return getHainburgEvents()
-        .filter { it.rm == filterRm && it.p == filterP && it.gs == filterGs}
-        .map {
-            DatedCalendarItem(
-                gs = it.gs,
-                kind = it.kind,
-                p = it.p,
-                rm = it.rm,
-                date = it.date,
-                townId = it.townId
-            )
-        }
+fun getTownFromUserData(userAddress: UserAddress): Town {
+    return getTowns().first { it.name == userAddress.townName }
+}
+
+fun getRegionFromUserData(userAddress: UserAddress): Region {
+    return getTowns().first { it.name == userAddress.townName }.regions.first {
+        it.name == userAddress.streetName
+    }
 }
 
 

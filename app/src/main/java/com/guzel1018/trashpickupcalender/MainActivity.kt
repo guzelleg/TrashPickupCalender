@@ -6,15 +6,20 @@ import androidx.activity.compose.setContent
 import com.guzel1018.trashpickupcalender.ui.TrashPickupSearchScreen
 import com.guzel1018.trashpickupcalender.ui.theme.TrashPickupCalenderTheme
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.guzel1018.trashpickupcalender.service.AddressService
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var userAddressService: AddressService
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             TrashPickupCalenderTheme {
-                TrashPickupSearchScreen(viewModel = hiltViewModel())
+                TrashPickupSearchScreen(viewModel = hiltViewModel(), addressService = userAddressService)
             }
         }
     }

@@ -30,7 +30,7 @@ fun StreetFilterScreen(
     viewModel: MainViewModel,
     onRegionClick: (Region) -> Unit
 ) {
-    val searchText by viewModel.searchText.collectAsState()
+    val searchText by viewModel.searchStreetText.collectAsState()
     val regions by viewModel.regions.collectAsState()
     val isSearching by viewModel.isSearching.collectAsState()
     Column(
@@ -41,7 +41,7 @@ fun StreetFilterScreen(
         OutlinedTextField(
             value = searchText,
             label = { Text(text = "Search for the street") },
-            onValueChange = viewModel::onSearchTextChange,
+            onValueChange = viewModel::onStreetSearchTextChange,
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -64,6 +64,7 @@ fun StreetFilterScreen(
                             .fillMaxSize()
                             .padding(vertical = 16.dp)
                             .clickable {
+                                viewModel.clearStreetSearchText()
                                 onRegionClick(region)
                             }
                     )

@@ -6,13 +6,13 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 interface AddressService {
-    fun getAddressFromPrefDataStore(): Flow<UserAddress>
+    fun getAddressFromDataStore(): Flow<UserAddress>
     suspend fun addAddress(address: UserAddress)
 }
 class AddressServiceImpl @Inject constructor(
     private val DataStoreManager: DataStoreManager
 ) : AddressService {
-    override fun getAddressFromPrefDataStore() =
+    override fun getAddressFromDataStore(): Flow<UserAddress> =
         DataStoreManager.getAddress()
 
     override suspend fun addAddress(address: UserAddress) {

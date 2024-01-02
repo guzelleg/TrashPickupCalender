@@ -9,12 +9,12 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 interface DataStoreManager {
-    suspend fun saveAddress(townName: String, streetName: String?)
+    suspend fun saveAddress(townName: String?, streetName: String?)
     fun getAddress(): Flow<UserAddress>
 }
 
 data class UserAddress(
-    val townName: String,
+    val townName: String?,
     val streetName: String?
 )
 
@@ -24,9 +24,9 @@ class DataStoreManagerImpl @Inject constructor(
 
     private val SELECTED_TOWN = stringPreferencesKey("selected_town")
     private val SELECTED_STREET = stringPreferencesKey("selected_street")
-    override suspend fun saveAddress(townName: String, streetName: String?) {
+    override suspend fun saveAddress(townName: String?, streetName: String?) {
        addressPreferenceStore.edit {
-           addressPreferenceStore -> addressPreferenceStore[SELECTED_TOWN] = townName
+           addressPreferenceStore -> addressPreferenceStore[SELECTED_TOWN] = townName ?: ""
            addressPreferenceStore[SELECTED_STREET] = streetName ?: ""
        }
     }

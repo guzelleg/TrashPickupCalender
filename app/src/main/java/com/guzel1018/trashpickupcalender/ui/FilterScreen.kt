@@ -21,17 +21,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.guzel1018.trashpickupcalender.R
 import com.guzel1018.trashpickupcalender.clickable
+import com.guzel1018.trashpickupcalender.data.UserAddress
 import com.guzel1018.trashpickupcalender.model.Town
+import com.guzel1018.trashpickupcalender.service.AddressService
 import com.guzel1018.trashpickupcalender.utils.getEventsByTown
 import com.guzel1018.trashpickupcalender.utils.getEventsByTownAndRegion
 
@@ -41,38 +40,14 @@ enum class FilterScreen(@StringRes val title: Int) {
     Details(title = R.string.details_screen_title)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun TrashCalenderAppBar(
-    modifier: Modifier = Modifier,
-    currentScreen: FilterScreen
-) {
-    TopAppBar(
-        title = {
-            Text(
-                text = stringResource(currentScreen.title),
-                fontSize = 25.sp
-            )
-        },
-        modifier = modifier,
-    )
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TrashPickupSearchScreen(viewModel: MainViewModel, modifier: Modifier = Modifier) {
+fun TrashPickupSearchScreen(viewModel: MainViewModel,
+                            modifier: Modifier = Modifier,
+                            addressService: AddressService) {
     val navController = rememberNavController()
-    val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentScreen = FilterScreen.valueOf(
-        backStackEntry?.destination?.route ?: FilterScreen.Start.name
-    )
-
     Scaffold(
-        topBar = {
-            TrashCalenderAppBar(
-                currentScreen = currentScreen,
-            )
-        }
     )
     { innerPadding ->
         val searchUiState by viewModel.searchUiState.collectAsState()
@@ -89,6 +64,7 @@ fun TrashPickupSearchScreen(viewModel: MainViewModel, modifier: Modifier = Modif
                         if (it.regions.isEmpty()) {
                             viewModel.setEvents(getEventsByTown(it))
                             navController.navigate(FilterScreen.Details.name) {
+                                popUpTo(FilterScreen.Details.name)
                             }
                         } else {
                             viewModel.setRegions(it)
@@ -100,7 +76,7 @@ fun TrashPickupSearchScreen(viewModel: MainViewModel, modifier: Modifier = Modif
             composable(
                 FilterScreen.Details.name
             ) {
-                EventCalenderScreen(viewModel, searchUiState)
+                EventCalenderScreen(viewModel, addressService, navController, searchUiState)
             }
             composable(
                 FilterScreen.StreetFilter.name
@@ -109,9 +85,21 @@ fun TrashPickupSearchScreen(viewModel: MainViewModel, modifier: Modifier = Modif
                     onRegionClick = {
                         viewModel.setEvents(null)
                         viewModel.setSelectedRegion(it)
-                        if (searchUiState.currentSelectedTown !=null )
-                            viewModel.setEvents(getEventsByTownAndRegion(searchUiState.currentSelectedTown!!, it))
+                        viewModel.saveAddressData(
+                            UserAddress(
+                                townName = searchUiState.currentSelectedTown?.name,
+                                streetName = it.name
+                            )
+                        )
+                        if (searchUiState.currentSelectedTown != null)
+                            viewModel.setEvents(
+                                getEventsByTownAndRegion(
+                                    searchUiState.currentSelectedTown!!,
+                                    it
+                                )
+                            )
                         navController.navigate(FilterScreen.Details.name) {
+                            popUpTo(FilterScreen.Details.name)
                         }
                     })
             }
@@ -134,14 +122,18 @@ fun FilterScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
+        Text(
+            text = "GABL ABFUHRKALENDER",
+            fontSize = 25.sp, modifier = Modifier.padding(top = 5.dp)
+        )
         OutlinedTextField(
             value = searchText,
-            label = { Text(text = "Search for the town") },
+            label = { Text(text = "Gemeinde wählen") },
             onValueChange = viewModel::onSearchTextChange,
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(10.dp))
         if (isSearching) {
             Box(modifier = Modifier.fillMaxSize()) {
                 CircularProgressIndicator(
@@ -169,10 +161,4 @@ fun FilterScreen(
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun PreviewFilter() {
-    // FilterScreen()
 }

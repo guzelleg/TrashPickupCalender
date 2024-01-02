@@ -1,8 +1,8 @@
 package com.guzel1018.trashpickupcalender.ui
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,12 +16,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -40,11 +39,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.guzel1018.trashpickupcalender.R
-import com.guzel1018.trashpickupcalender.clickable
 import com.guzel1018.trashpickupcalender.model.DatedCalendarItem
 import com.guzel1018.trashpickupcalender.rememberFirstMostVisibleMonth
-import com.guzel1018.trashpickupcalender.ui.theme.TrashPickupCalenderTheme
+import com.guzel1018.trashpickupcalender.service.AddressService
 import com.guzel1018.trashpickupcalender.utils.displayText
 import com.kizitonwose.calendar.compose.ContentHeightMode
 import com.kizitonwose.calendar.compose.HorizontalCalendar
@@ -59,17 +59,44 @@ import java.time.DayOfWeek
 import java.time.YearMonth
 
 
+@SuppressLint("StateFlowValueCalledInComposition", "CoroutineCreationDuringComposition")
 @Composable
 fun EventCalenderScreen(
     viewModel: MainViewModel,
-    searchDetailUiState: SearchUiState) {
+    addressService: AddressService,
+    navController: NavHostController,
+    searchDetailUiState: SearchUiState,
+    ) {
     val currentMonth = remember { YearMonth.now() }
     val startMonth = remember { currentMonth.minusMonths(500) }
     val endMonth = remember { currentMonth.plusMonths(500) }
-    val selections = remember { mutableStateListOf<CalendarDay>() }
     val daysOfWeek = remember { daysOfWeek() }
     val events by viewModel.events.collectAsState()
 
+    val selectedCalendarDay by viewModel.selectedDay.collectAsState()
+    var showDetails by remember { mutableStateOf(false) }
+
+    if (showDetails && selectedCalendarDay !=null) {
+        AlertDialog(
+            onDismissRequest = { },
+            dismissButton = {
+                Button(onClick = {
+                    showDetails = false
+                }) {
+                    Text(text = "Close")
+                } },
+            confirmButton = { },
+            text = {
+                Column {
+                    Text(text = "${selectedCalendarDay!!.date.month} ${selectedCalendarDay!!.date.dayOfMonth},  ${selectedCalendarDay!!.date.year}",
+                        fontSize = 16.sp)
+                    Text(text = "")
+                    for (event in events?.groupBy { it.date }?.get(selectedCalendarDay!!.date)?.distinctBy { it.kind }!!)
+                        Text(text = event.kind)
+                }
+            }
+        )
+    }
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -84,7 +111,7 @@ fun EventCalenderScreen(
         val visibleMonth = rememberFirstMostVisibleMonth(state, viewportPercent = 90f)
 
         CalendarScreen(
-            modifier = Modifier.padding(vertical = 10.dp, horizontal = 8.dp),
+            modifier = Modifier.padding( horizontal = 8.dp),
             currentMonth = visibleMonth.yearMonth,
             goToPrevious = {
                 coroutineScope.launch {
@@ -97,18 +124,21 @@ fun EventCalenderScreen(
                 }
             },
             searchDetailUiState = searchDetailUiState,
+            navController = navController
         )
         HorizontalCalendar(
             modifier = Modifier.testTag("Calendar"),
-            contentHeightMode = ContentHeightMode.Fill,
+            contentHeightMode = ContentHeightMode.Wrap,
             state = state,
             dayContent = { day ->
                 Day(
                     day,
-                    isSelected = selections.contains(day),
-                    events = events?.groupBy { it.date }?.get(day.date)
+                    events = events?.groupBy { it.date }?.get(day.date)?.distinctBy { it.kind }
                 )
-                {}
+                {
+                    viewModel.setSelectedDay(it)
+                    showDetails = true
+                }
             },
             monthHeader = {
                 MonthHeader(daysOfWeek = daysOfWeek)
@@ -139,40 +169,36 @@ private fun MonthHeader(daysOfWeek: List<DayOfWeek>) {
 @Composable
 private fun Day(
     day: CalendarDay,
-    isSelected: Boolean,
     events: List<DatedCalendarItem>?,
     onClick: (CalendarDay) -> Unit
 ) {
     Box(
         modifier = Modifier
-            .aspectRatio(1f) // This is important for square-sizing!
+            .aspectRatio(0.55f) // This is important for square-sizing!
             .testTag("MonthDay")
-            .padding(6.dp)
-            .background(color = if (isSelected) colorResource(R.color.example_1_selection_color) else Color.Transparent)
+            .background(color = Color.Transparent)
             .clickable(
                 enabled = day.position == DayPosition.MonthDate,
-                showRipple = !isSelected,
-                onClick = { onClick(day) },
-            ),
-        contentAlignment = Alignment.Center,
+                onClick = { onClick(day) }),
+        contentAlignment = Alignment.TopCenter,
     ) {
         val textColor = when (day.position) {
             // Color.Unspecified will use the default text color from the current theme
-            DayPosition.MonthDate -> if (isSelected) Color.White else Color.Unspecified
+            DayPosition.MonthDate -> Color.Unspecified
             DayPosition.InDate, DayPosition.OutDate -> colorResource(R.color.inactive_text_color)
         }
         Column(modifier = Modifier.fillMaxHeight()) {
             Text(
                 text = day.date.dayOfMonth.toString(),
                 color = textColor,
-                fontSize = 20.sp,
+                fontSize = 22.sp,
             )
             Column {
                 if (events != null) {
                     for (event in events) {
                         Text(
                             text = getNameAbbreviation(event.kind),
-                            fontSize = 18.sp,
+                            fontSize = 14.sp,
                             color = textColor,
                             modifier = Modifier.background(getBackgroundColor(event.kind))
                         )
@@ -185,15 +211,22 @@ private fun Day(
 
 fun getNameAbbreviation(fullName: String): String {
     return when (fullName) {
-        "Bio" -> "bio"
+        "Bio", "Bioabfall, Wilfleinsdorf", "Bioabfall, Gebiet A", "Bioabfall, Gebiet B" -> "bio"
         "Gelbe Tonne" -> "GbT"
         "Papier 2-wöchig" -> "P2W"
         "Papier 4-wöchig" -> "P4W"
-        "Papier 8-wöchig" -> "P8W"
+        "Papier 8-wöchig", "Papier 8-w\u00f6chig, Gebiet A", "Papier 8-w\u00f6chig, Gebiet B" -> "P8W"
         "Restmüll halbjährig" -> "RHb"
-        "Restmüll 4-wöchig" -> "R4W"
-        "Gelber Sack" -> "GS"
-        else -> ""
+        "Restm\u00fcll 4-w\u00f6chig in Zone Margarethen am Moos","Restmüll 4-wöchig", "Restm\u00fcll 4-w\u00f6chig", "Restm\u00fcll 4-w\u00f6chig in Zone Enzersdorf", -> "R4W"
+        "Restm\u00fcll 2-w\u00f6chig halbj\u00e4hrig, Wilfleinsdorf" -> "R2W"
+        "Restm\u00fcll 2-w\u00f6chig", "Restm\u00fcll 2-w\u00f6chig halbj\u00e4hrig", "Restm\u00fcll 2-w\u00f6chig, Wilfleinsdorf" -> "R2W"
+        "Restm\u00fcll 1-w\u00f6chig" -> "R1W"
+        "Papier 8-w\u00f6chig in Zone Margarethen am Moos", "Restm\u00fcll 8-w\u00f6chig und halbj\u00e4hrig, Wilfleinsdorf" -> "R8W"
+        "Restm\u00fcll, Gebiet A" -> "RA"
+        "Restm\u00fcll, Gebiet B" -> "RB"
+        "Restm\u00fcll, Gebiet C" -> "RC"
+        "Gelber Sack", "Gelber Sack, Gebiet C", "Gelber Sack, Gebiet A", "Gelber Sack, Gebiet B" -> "GS"
+        else -> fullName
     }
 }
 
@@ -213,7 +246,8 @@ fun CalendarScreen(
     currentMonth: YearMonth,
     goToPrevious: () -> Unit,
     goToNext: () -> Unit,
-    searchDetailUiState: SearchUiState
+    searchDetailUiState: SearchUiState,
+    navController: NavHostController,
 ) {
 
     var showDialog by remember { mutableStateOf(false) }
@@ -222,49 +256,81 @@ fun CalendarScreen(
             onDismissRequest = { showDialog = false },
             confirmButton = {
                 Button(
-                    onClick = { showDialog = false }) {
+                    onClick = { showDialog = false
+                        navController.navigate(FilterScreen.Start.name)
+                    }) {
                     Text(text = "Yes, reset my selection")
                 }
             },
             dismissButton = {
-                Button(onClick = { showDialog = false }) {
+                Button(onClick = { showDialog = false
+
+                }) {
                     Text(text = "No, stay here")
                 }
             },
             text =  {Text(text = "Are you sure you want to select another town?")},
         )
     }
-    Row(
-        horizontalArrangement = Arrangement.SpaceAround,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
+
+    var showInfo by remember { mutableStateOf(false) }
+
+    if (showInfo) {
+        AlertDialog(onDismissRequest = {}, confirmButton = {},
+            text = { Column{
+                Text(text = "Abkürzungen:")
+                Text(text = "")
+                Text(text = "bio - Biomüll", Modifier.background(Color.Green))
+                Text(text = "GbT - Gelbe Tonne", Modifier.background(Color.Yellow))
+                Text(text = "GS - Gelber Sack", Modifier.background(Color.Yellow))
+                Text(text = "P2W - Papier 2-wöchig", Modifier.background(Color.Red))
+                Text(text = "P4W - Papier 4-wöchig", Modifier.background(Color.Red))
+                Text(text = "P8W - Papier 8-wöchig",Modifier.background(Color.Red))
+                Text(text = "RHb -Restmüll halbjährig", Modifier.background(Color.Gray))
+                Text(text = "R4W - Restmüll 4-wöchig", Modifier.background(Color.Gray))
+            }},
+            dismissButton = {
+                Button(onClick = { showInfo = false }) {
+                    Text(text = "Close")
+                }
+            },
+                )
+    }
+
+    Column {
         searchDetailUiState.currentSelectedTown?.let {
             Text(
-                modifier = Modifier
-                    .padding(start = 20.dp)
-                    .weight(1f),
                 text = it.name,
-                fontSize = 25.sp,
+                fontSize = 25.sp, modifier = Modifier.padding(start = 10.dp, top = 10.dp)
             )
         }
-        Text(text = "Select another town",
-            fontSize = 18.sp,
-            color = MaterialTheme.colorScheme.inversePrimary,
-            modifier = Modifier
-                .padding(end = 5.dp)
-                .clickable(role = Role.Button, onClick = { showDialog = true }),)
+
+        Row {
+            TextButton(
+                onClick = { showDialog = true },
+
+                ) {
+                Text(text = "Select another town")
+            }
+
+            TextButton(
+                onClick = { showInfo = true },
+
+                ) {
+                Text(text = "Info")
+            }
+        }
     }
 
     Row(
-        modifier = modifier.height(40.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceAround,
+        modifier = modifier.height(30.dp),
+        verticalAlignment = Alignment.Top,
     ) {
         Text(
             modifier = Modifier
                 .weight(1f)
                 .testTag("MonthTitle")
-                .padding(start = 13.dp),
+                .padding(bottom = 5.dp),
             text = currentMonth.displayText(),
             fontSize = 22.sp,
             textAlign = TextAlign.Start,
@@ -307,7 +373,8 @@ private fun CalendarNavigationIcon(
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
-    TrashPickupCalenderTheme {
-    }
+fun EventCalenderScreenPreview() {
+    val navController = rememberNavController()
+    CalendarScreen(currentMonth = YearMonth.now(), goToNext = {}, goToPrevious = {}, navController = navController, modifier = Modifier,
+        searchDetailUiState = SearchUiState())
 }
