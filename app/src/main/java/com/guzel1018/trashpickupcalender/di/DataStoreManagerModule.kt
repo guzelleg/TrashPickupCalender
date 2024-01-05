@@ -13,18 +13,12 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class DataStoreManagerModule {
-    @Singleton
-    @Binds
-    abstract fun
-            bindDataStoreRepository(
-        DataStoreManagerImpl:
-        DataStoreManagerImpl
-    ): DataStoreManager
 
     @Singleton
     @Binds
-    abstract fun bindTaskService(
-        addressServiceImpl:
-        AddressServiceImpl
-    ): AddressService
+    abstract fun bindDataStoreRepository(dataStoreManagerImpl: DataStoreManagerImpl): DataStoreManager
+
+    @Singleton
+    @Binds
+    abstract fun bindTaskService(addressServiceImpl: AddressServiceImpl): AddressService
 }

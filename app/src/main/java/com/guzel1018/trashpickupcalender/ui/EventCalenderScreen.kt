@@ -3,6 +3,7 @@ package com.guzel1018.trashpickupcalender.ui
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,15 +37,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.guzel1018.trashpickupcalender.R
 import com.guzel1018.trashpickupcalender.model.DatedCalendarItem
 import com.guzel1018.trashpickupcalender.rememberFirstMostVisibleMonth
-import com.guzel1018.trashpickupcalender.service.AddressService
 import com.guzel1018.trashpickupcalender.utils.displayText
 import com.kizitonwose.calendar.compose.ContentHeightMode
 import com.kizitonwose.calendar.compose.HorizontalCalendar
@@ -63,9 +61,7 @@ import java.time.YearMonth
 @Composable
 fun EventCalenderScreen(
     viewModel: MainViewModel,
-    addressService: AddressService,
     navController: NavHostController,
-    searchDetailUiState: SearchUiState,
     ) {
     val currentMonth = remember { YearMonth.now() }
     val startMonth = remember { currentMonth.minusMonths(500) }
@@ -123,7 +119,7 @@ fun EventCalenderScreen(
                     state.animateScrollToMonth(state.firstVisibleMonth.yearMonth.nextMonth)
                 }
             },
-            searchDetailUiState = searchDetailUiState,
+            viewModel = viewModel,
             navController = navController
         )
         HorizontalCalendar(
@@ -238,13 +234,14 @@ fun getBackgroundColor(name: String): Color {
     }
 }
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun CalendarScreen(
     modifier: Modifier,
     currentMonth: YearMonth,
     goToPrevious: () -> Unit,
     goToNext: () -> Unit,
-    searchDetailUiState: SearchUiState,
+    viewModel: MainViewModel,
     navController: NavHostController,
 ) {
 
@@ -296,14 +293,19 @@ fun CalendarScreen(
     }
 
     Column {
-        searchDetailUiState.currentSelectedTown?.let {
+        viewModel.savedAddress.let {
             Text(
-                text = it.name,
+                text = "${it.value?.townName}",
                 fontSize = 25.sp, modifier = Modifier.padding(start = 10.dp, top = 10.dp)
             )
+            if (it.value?.streetName != "") {Text(
+                text = "${viewModel.savedAddress.value?.streetName}",
+                fontSize = 18.sp, modifier = Modifier.padding(start = 10.dp)
+            )}
         }
 
-        Row {
+        Row(horizontalArrangement = Arrangement.End
+        ) {
             TextButton(
                 onClick = { showDialog = true },
 
@@ -367,12 +369,4 @@ private fun CalendarNavigationIcon(
         painter = icon,
         contentDescription = contentDescription,
     )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun EventCalenderScreenPreview() {
-    val navController = rememberNavController()
-    CalendarScreen(currentMonth = YearMonth.now(), goToNext = {}, goToPrevious = {}, navController = navController, modifier = Modifier,
-        searchDetailUiState = SearchUiState())
 }

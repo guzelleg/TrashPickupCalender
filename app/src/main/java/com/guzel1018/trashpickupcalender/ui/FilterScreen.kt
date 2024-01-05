@@ -27,9 +27,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.guzel1018.trashpickupcalender.R
 import com.guzel1018.trashpickupcalender.clickable
-import com.guzel1018.trashpickupcalender.data.UserAddress
 import com.guzel1018.trashpickupcalender.model.Town
-import com.guzel1018.trashpickupcalender.service.AddressService
 import com.guzel1018.trashpickupcalender.utils.getEventsByTown
 import com.guzel1018.trashpickupcalender.utils.getEventsByTownAndRegion
 
@@ -43,11 +41,9 @@ enum class FilterScreen(@StringRes val title: Int) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TrashPickupSearchScreen(viewModel: MainViewModel,
-                            modifier: Modifier = Modifier,
-                            addressService: AddressService) {
+                                    modifier: Modifier = Modifier,) {
     val navController = rememberNavController()
-    Scaffold(
-    )
+    Scaffold()
     { innerPadding ->
         val searchUiState by viewModel.searchUiState.collectAsState()
         NavHost(
@@ -56,7 +52,7 @@ fun TrashPickupSearchScreen(viewModel: MainViewModel,
             modifier = modifier.padding(innerPadding)
         ) {
             composable(FilterScreen.Start.name) {
-                FilterScreen(
+                 FilterScreen(
                     viewModel = viewModel,
                     onTownClick = {
                         viewModel.setEvents(null)
@@ -75,7 +71,7 @@ fun TrashPickupSearchScreen(viewModel: MainViewModel,
             composable(
                 FilterScreen.Details.name
             ) {
-                EventCalenderScreen(viewModel, addressService, navController, searchUiState)
+                EventCalenderScreen(viewModel, navController)
             }
             composable(
                 FilterScreen.StreetFilter.name
@@ -83,21 +79,15 @@ fun TrashPickupSearchScreen(viewModel: MainViewModel,
                 StreetFilterScreen(viewModel = viewModel,
                     onRegionClick = {
                         viewModel.setEvents(null)
-                        viewModel.setSelectedRegion(it)
-                        viewModel.saveAddressData(
-                            UserAddress(
-                                townName = searchUiState.currentSelectedTown?.name,
-                                streetName = it.name
-                            )
-                        )
-                        if (searchUiState.currentSelectedTown != null)
+                        if (searchUiState.currentSelectedTown != null) {
                             viewModel.setEvents(
                                 getEventsByTownAndRegion(
                                     searchUiState.currentSelectedTown!!,
                                     it
                                 )
                             )
-                        navController.navigate(FilterScreen.Details.name) {
+                        }
+                            navController.navigate(FilterScreen.Details.name) {
                             popUpTo(FilterScreen.Details.name)
                         }
                     })

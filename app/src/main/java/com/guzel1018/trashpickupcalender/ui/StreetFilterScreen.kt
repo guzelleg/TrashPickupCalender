@@ -65,6 +65,7 @@ fun StreetFilterScreen(
                             .padding(vertical = 16.dp)
                             .clickable {
                                 viewModel.clearStreetSearchText()
+                                viewModel.setSelectedRegion(region)
                                 onRegionClick(region)
                             }
                     )

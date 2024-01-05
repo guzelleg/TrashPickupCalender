@@ -19,7 +19,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             TrashPickupCalenderTheme {
-                TrashPickupSearchScreen(viewModel = hiltViewModel(), addressService = userAddressService)
+                TrashPickupSearchScreen(viewModel = hiltViewModel())
             }
         }
     }

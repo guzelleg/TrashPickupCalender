@@ -1,8 +1,8 @@
 package com.guzel1018.trashpickupcalender.ui
 
-import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.guzel1018.trashpickupcalender.model.Town
 import com.guzel1018.trashpickupcalender.utils.getTowns
@@ -16,9 +16,12 @@ import com.guzel1018.trashpickupcalender.data.UserAddress
 import com.guzel1018.trashpickupcalender.model.DatedCalendarItem
 import com.guzel1018.trashpickupcalender.model.Region
 import com.guzel1018.trashpickupcalender.service.AddressService
+import com.guzel1018.trashpickupcalender.utils.getRegionFromUserData
 import com.guzel1018.trashpickupcalender.utils.getRegions
+import com.guzel1018.trashpickupcalender.utils.getTownFromUserData
 import com.kizitonwose.calendar.core.CalendarDay
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -40,7 +43,8 @@ class MainViewModel @Inject constructor (
     private val _searchUiState = MutableStateFlow(SearchUiState())
     val searchUiState: StateFlow<SearchUiState> = _searchUiState.asStateFlow()
 
-    val savedAddress = addressService.getAddressFromDataStore().asLiveData()
+    private val _savedAddress = MutableLiveData<UserAddress>()
+    var savedAddress: LiveData<UserAddress> = _savedAddress
 
     private val _selectedDay: MutableStateFlow<CalendarDay?> = MutableStateFlow(null)
     val selectedDay = _selectedDay.asStateFlow()
@@ -81,12 +85,6 @@ class MainViewModel @Inject constructor (
             _regions.value
         )
 
-    fun saveAddressData(address: UserAddress) {
-        viewModelScope.launch {
-            Log.d("Address", "Data was inserted")
-                    addressService.addAddress(address)
-        }
-    }
 
     fun onSearchTextChange(text: String) {
         _searchText.value = text
@@ -108,6 +106,10 @@ class MainViewModel @Inject constructor (
         _searchUiState.update { currentState ->
             currentState.copy(currentSelectedTown = selectedTown)
         }
+        viewModelScope.launch {
+            addressService.addAddress(town = selectedTown, null)
+            setSavedAddress()
+        }
     }
 
     fun setRegions(selectedTown: Town) {
@@ -123,6 +125,20 @@ class MainViewModel @Inject constructor (
     fun setSelectedRegion(selectedRegion: Region) {
         _searchUiState.update { currentState ->
             currentState.copy(currentSelectedStreet = selectedRegion)
+        }
+        viewModelScope.launch {
+            addressService.addAddress(town = searchUiState.value.currentSelectedTown!!, selectedRegion)
+            setSavedAddress()
+        }
+    }
+
+    private suspend fun setSavedAddress(){
+        _savedAddress.value = addressService.getAddressFromDataStore().first()
+    }
+
+    init {
+        viewModelScope.launch {
+            setSavedAddress()
         }
     }
 }

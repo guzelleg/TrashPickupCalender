@@ -80,6 +80,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.4.0")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
+    implementation ("androidx.compose.runtime:runtime-livedata:1.5.4")
     implementation ("com.google.dagger:dagger:2.47")
     implementation ("com.google.dagger:hilt-android:2.47")
     kapt("com.google.dagger:hilt-android-compiler:2.47")
