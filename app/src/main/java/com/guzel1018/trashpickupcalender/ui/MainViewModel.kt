@@ -1,7 +1,5 @@
 package com.guzel1018.trashpickupcalender.ui
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.guzel1018.trashpickupcalender.model.Town
@@ -16,11 +14,14 @@ import com.guzel1018.trashpickupcalender.data.UserAddress
 import com.guzel1018.trashpickupcalender.model.DatedCalendarItem
 import com.guzel1018.trashpickupcalender.model.Region
 import com.guzel1018.trashpickupcalender.service.AddressService
+import com.guzel1018.trashpickupcalender.utils.getEventsByTown
+import com.guzel1018.trashpickupcalender.utils.getEventsByTownAndRegion
 import com.guzel1018.trashpickupcalender.utils.getRegionFromUserData
 import com.guzel1018.trashpickupcalender.utils.getRegions
 import com.guzel1018.trashpickupcalender.utils.getTownFromUserData
 import com.kizitonwose.calendar.core.CalendarDay
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -43,40 +44,41 @@ class MainViewModel @Inject constructor (
     private val _searchUiState = MutableStateFlow(SearchUiState())
     val searchUiState: StateFlow<SearchUiState> = _searchUiState.asStateFlow()
 
-    private val _savedAddress = MutableLiveData<UserAddress>()
-    var savedAddress: LiveData<UserAddress> = _savedAddress
+    private val _savedAddress = MutableStateFlow(UserAddress())
+    var savedAddress: StateFlow<UserAddress> = _savedAddress
 
     private val _selectedDay: MutableStateFlow<CalendarDay?> = MutableStateFlow(null)
     val selectedDay = _selectedDay.asStateFlow()
 
-    fun setSelectedDay(day:CalendarDay?){
+    fun setSelectedDay(day: CalendarDay?) {
         _selectedDay.value = day
     }
 
-    val _towns = MutableStateFlow(getTowns())
+    private val _towns = MutableStateFlow(getTowns())
+    @OptIn(FlowPreview::class)
     val towns = searchText
         .debounce(500L)
         .combine(_towns) { text, towns ->
-        if (text.isBlank()) {
-            towns
-        } else towns.filter { it.doesMatchSearchQuery(text) }
-    }.stateIn(
-        viewModelScope, SharingStarted.WhileSubscribed(5000),
-        _towns.value
-    )
+            if (text.isBlank()) {
+                towns
+            } else towns.filter { it.doesMatchSearchQuery(text) }
+        }.stateIn(
+            viewModelScope, SharingStarted.WhileSubscribed(5000),
+            _towns.value
+        )
 
     private val _events = MutableStateFlow<List<DatedCalendarItem>?>(listOf())
     val events = _events.asStateFlow()
 
 
-    private val _regions = MutableStateFlow( _searchUiState.value.currentSelectedTown?.let {
+    private val _regions = MutableStateFlow(_searchUiState.value.currentSelectedTown?.let {
         getRegions(it)
     } ?: listOf())
 
+    @OptIn(FlowPreview::class)
     val regions = searchStreetText
         .debounce(500L)
-        .combine(_regions){
-            text, regions ->
+        .combine(_regions) { text, regions ->
             regions.filter {
                 it.name.contains(text, ignoreCase = true)
             }
@@ -113,10 +115,10 @@ class MainViewModel @Inject constructor (
     }
 
     fun setRegions(selectedTown: Town) {
-        _regions.update { getRegions(selectedTown)}
+        _regions.update { getRegions(selectedTown) }
     }
 
-    fun setEvents(events: List<DatedCalendarItem>?){
+    fun setEvents(events: List<DatedCalendarItem>?) {
         _events.update {
             events
         }
@@ -127,18 +129,45 @@ class MainViewModel @Inject constructor (
             currentState.copy(currentSelectedStreet = selectedRegion)
         }
         viewModelScope.launch {
-            addressService.addAddress(town = searchUiState.value.currentSelectedTown!!, selectedRegion)
+            addressService.addAddress(
+                town = searchUiState.value.currentSelectedTown!!,
+                selectedRegion
+            )
             setSavedAddress()
         }
     }
 
-    private suspend fun setSavedAddress(){
+    private suspend fun setSavedAddress() {
         _savedAddress.value = addressService.getAddressFromDataStore().first()
     }
 
+    fun deleteSavedData() =
+        viewModelScope.launch {
+            addressService.deleteAddress()
+            setSavedAddress()
+        }
     init {
         viewModelScope.launch {
             setSavedAddress()
+            val userTown = if (_savedAddress.value.townName != "" && _savedAddress.value.townName != null) getTownFromUserData(
+                _savedAddress.value
+            ) else null
+            val userStreet = if (_savedAddress.value.streetName != "" && _savedAddress.value.streetName != null) {
+                getRegionFromUserData(
+                    _savedAddress.value
+                )
+            } else null
+            _searchUiState.update { currentState ->
+                currentState.copy(
+                    currentSelectedStreet = userStreet,
+                    currentSelectedTown = userTown
+                )
+            }
+            if (userStreet == null) {
+                setEvents(userTown?.let { getEventsByTown(it) })
+            }
+            else
+                setEvents(userTown?.let { getEventsByTownAndRegion(it, userStreet) })
         }
     }
 }

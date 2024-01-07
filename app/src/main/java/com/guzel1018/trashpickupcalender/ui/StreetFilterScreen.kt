@@ -40,7 +40,7 @@ fun StreetFilterScreen(
     ) {
         OutlinedTextField(
             value = searchText,
-            label = { Text(text = "Search for the street") },
+            label = { Text(text = "Straße finden") },
             onValueChange = viewModel::onStreetSearchTextChange,
             modifier = Modifier.fillMaxWidth()
         )

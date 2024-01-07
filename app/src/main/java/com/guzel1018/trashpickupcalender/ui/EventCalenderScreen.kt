@@ -66,7 +66,7 @@ fun EventCalenderScreen(
     val currentMonth = remember { YearMonth.now() }
     val startMonth = remember { currentMonth.minusMonths(500) }
     val endMonth = remember { currentMonth.plusMonths(500) }
-    val daysOfWeek = remember { daysOfWeek() }
+    val daysOfWeek = remember { daysOfWeek(firstDayOfWeek = DayOfWeek.MONDAY) }
     val events by viewModel.events.collectAsState()
 
     val selectedCalendarDay by viewModel.selectedDay.collectAsState()
@@ -79,7 +79,7 @@ fun EventCalenderScreen(
                 Button(onClick = {
                     showDetails = false
                 }) {
-                    Text(text = "Close")
+                    Text(text = "Schließen")
                 } },
             confirmButton = { },
             text = {
@@ -253,18 +253,19 @@ fun CalendarScreen(
                 Button(
                     onClick = { showDialog = false
                         navController.navigate(FilterScreen.Start.name)
+                        viewModel.deleteSavedData()
                     }) {
-                    Text(text = "Yes, reset my selection")
+                    Text(text = "Ja, ändern")
                 }
             },
             dismissButton = {
                 Button(onClick = { showDialog = false
 
                 }) {
-                    Text(text = "No, stay here")
+                    Text(text = "Nein, hier bleiben")
                 }
             },
-            text =  {Text(text = "Are you sure you want to select another town?")},
+            text =  {Text(text = "Gewählte Gemeinde ändern?")},
         )
     }
 
@@ -286,7 +287,7 @@ fun CalendarScreen(
             }},
             dismissButton = {
                 Button(onClick = { showInfo = false }) {
-                    Text(text = "Close")
+                    Text(text = "Schließen")
                 }
             },
                 )
@@ -295,11 +296,11 @@ fun CalendarScreen(
     Column {
         viewModel.savedAddress.let {
             Text(
-                text = "${it.value?.townName}",
+                text = "${it.value.townName}",
                 fontSize = 25.sp, modifier = Modifier.padding(start = 10.dp, top = 10.dp)
             )
-            if (it.value?.streetName != "") {Text(
-                text = "${viewModel.savedAddress.value?.streetName}",
+            if (it.value.streetName != "") {Text(
+                text = "${viewModel.savedAddress.value.streetName}",
                 fontSize = 18.sp, modifier = Modifier.padding(start = 10.dp)
             )}
         }
@@ -310,7 +311,7 @@ fun CalendarScreen(
                 onClick = { showDialog = true },
 
                 ) {
-                Text(text = "Select another town")
+                Text(text = "Andere Gemeinde auswählen")
             }
 
             TextButton(

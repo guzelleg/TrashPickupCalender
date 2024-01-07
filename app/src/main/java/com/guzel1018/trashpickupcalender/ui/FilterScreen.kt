@@ -1,5 +1,6 @@
 package com.guzel1018.trashpickupcalender.ui
 
+import android.annotation.SuppressLint
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,24 +39,33 @@ enum class FilterScreen(@StringRes val title: Int) {
 }
 
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TrashPickupSearchScreen(viewModel: MainViewModel,
-                                    modifier: Modifier = Modifier,) {
+fun NavHost(
+    viewModel: MainViewModel,
+    modifier: Modifier = Modifier,
+) {
     val navController = rememberNavController()
     Scaffold()
     { innerPadding ->
         val searchUiState by viewModel.searchUiState.collectAsState()
+        val startDestination: String = when {
+            (searchUiState.currentSelectedTown != null && searchUiState.currentSelectedTown!!.regions.isEmpty()) -> FilterScreen.Details.name
+            (searchUiState.currentSelectedTown != null && searchUiState.currentSelectedTown!!.regions.isNotEmpty() && searchUiState.currentSelectedStreet != null) -> FilterScreen.Details.name
+            (searchUiState.currentSelectedTown != null && searchUiState.currentSelectedTown!!.regions.isNotEmpty() && searchUiState.currentSelectedStreet == null) -> FilterScreen.StreetFilter.name
+            else -> FilterScreen.Start.name
+        }
+
         NavHost(
             navController,
-            startDestination = FilterScreen.Start.name,
+            startDestination = startDestination,
             modifier = modifier.padding(innerPadding)
         ) {
             composable(FilterScreen.Start.name) {
-                 FilterScreen(
+                FilterScreen(
                     viewModel = viewModel,
                     onTownClick = {
-                        viewModel.setEvents(null)
                         if (it.regions.isEmpty()) {
                             viewModel.setEvents(getEventsByTown(it))
                             navController.navigate(FilterScreen.Details.name) {
@@ -78,7 +88,6 @@ fun TrashPickupSearchScreen(viewModel: MainViewModel,
             ) {
                 StreetFilterScreen(viewModel = viewModel,
                     onRegionClick = {
-                        viewModel.setEvents(null)
                         if (searchUiState.currentSelectedTown != null) {
                             viewModel.setEvents(
                                 getEventsByTownAndRegion(
@@ -87,7 +96,7 @@ fun TrashPickupSearchScreen(viewModel: MainViewModel,
                                 )
                             )
                         }
-                            navController.navigate(FilterScreen.Details.name) {
+                        navController.navigate(FilterScreen.Details.name) {
                             popUpTo(FilterScreen.Details.name)
                         }
                     })

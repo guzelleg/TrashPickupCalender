@@ -1,6 +1,5 @@
 <resources>
-    <string name="app_name">Trash Pickup Calender</string>
-    <string name="back_button">Back</string>
+    <string name="app_name">GABL Abfuhrkalender</string>
     <string name="details_screen_title">Trash pickup dates</string>
     <string name="street_filter_title">Select Street</string>
 </resources>

@@ -10,6 +10,7 @@ import javax.inject.Inject
 interface AddressService {
     fun getAddressFromDataStore(): Flow<UserAddress>
     suspend fun addAddress(town: Town, street: Region?)
+    suspend fun deleteAddress()
 }
 class AddressServiceImpl @Inject constructor(
     private val DataStoreManager: DataStoreManager
@@ -20,4 +21,6 @@ class AddressServiceImpl @Inject constructor(
     override suspend fun addAddress(town: Town, street: Region?) {
         DataStoreManager.saveAddress(town.name, street?.name)
     }
+
+    override suspend fun deleteAddress() = DataStoreManager.deleteAddress()
 }

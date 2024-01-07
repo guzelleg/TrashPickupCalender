@@ -11,11 +11,12 @@ import javax.inject.Inject
 interface DataStoreManager {
     suspend fun saveAddress(townName: String?, streetName: String?)
     fun getAddress(): Flow<UserAddress>
+    suspend fun deleteAddress()
 }
 
 data class UserAddress(
-    val townName: String?,
-    val streetName: String?
+    val townName: String? = null,
+    val streetName: String? = null
 )
 
 class DataStoreManagerImpl @Inject constructor(
@@ -36,6 +37,13 @@ class DataStoreManagerImpl @Inject constructor(
             townName = addressPreference[SELECTED_TOWN] ?: "",
             streetName = addressPreference[SELECTED_STREET]
         )
+    }
+
+    override suspend fun deleteAddress() {
+        addressPreferenceStore.edit { addressPreferenceStore ->
+            addressPreferenceStore[SELECTED_TOWN] = ""
+            addressPreferenceStore[SELECTED_STREET] = ""
+        }
     }
 }
 
