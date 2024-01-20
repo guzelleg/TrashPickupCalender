@@ -54,6 +54,7 @@ import com.kizitonwose.calendar.core.nextMonth
 import com.kizitonwose.calendar.core.previousMonth
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
+import java.time.LocalDate
 import java.time.YearMonth
 
 
@@ -63,6 +64,7 @@ fun EventCalenderScreen(
     viewModel: MainViewModel,
     navController: NavHostController,
     ) {
+    val currentDate = remember { LocalDate.now() }
     val currentMonth = remember { YearMonth.now() }
     val startMonth = remember { currentMonth.minusMonths(500) }
     val endMonth = remember { currentMonth.plusMonths(500) }
@@ -128,13 +130,15 @@ fun EventCalenderScreen(
             state = state,
             dayContent = { day ->
                 Day(
-                    day,
-                    events = events?.groupBy { it.date }?.get(day.date)?.distinctBy { it.kind }
-                )
+                    day = day,
+                    events = events?.groupBy { it.date }?.get(day.date)?.distinctBy { it.kind },
+                    isToday = day.date == currentDate,
+                onClick =
                 {
                     viewModel.setSelectedDay(it)
                     showDetails = true
                 }
+                )
             },
             monthHeader = {
                 MonthHeader(daysOfWeek = daysOfWeek)
@@ -166,13 +170,17 @@ private fun MonthHeader(daysOfWeek: List<DayOfWeek>) {
 private fun Day(
     day: CalendarDay,
     events: List<DatedCalendarItem>?,
-    onClick: (CalendarDay) -> Unit
+    onClick: (CalendarDay) -> Unit,
+    isToday: Boolean
 ) {
     Box(
         modifier = Modifier
             .aspectRatio(0.55f) // This is important for square-sizing!
             .testTag("MonthDay")
-            .background(color = Color.Transparent)
+            .background(
+                color = if (isToday) Color.LightGray
+                else Color.Transparent
+            )
             .clickable(
                 onClick = { onClick(day) }),
         contentAlignment = Alignment.TopCenter,
