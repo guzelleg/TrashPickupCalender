@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -89,8 +90,28 @@ fun EventCalenderScreen(
                     Text(text = "${selectedCalendarDay!!.date.month} ${selectedCalendarDay!!.date.dayOfMonth},  ${selectedCalendarDay!!.date.year}",
                         fontSize = 16.sp)
                     Text(text = "")
-                    for (event in events?.groupBy { it.date }?.get(selectedCalendarDay!!.date)?.distinctBy { it.kind }!!)
-                        Text(text = event.kind)
+
+                    val selectedDate = selectedCalendarDay?.date
+                    val groupedEvents = events?.groupBy { it.date }
+
+                    if (selectedDate != null && groupedEvents != null) {
+                        val eventsForSelectedDate = groupedEvents[selectedDate]
+                        val distinctEvents = eventsForSelectedDate?.distinctBy { it.kind }
+
+                        if (!distinctEvents.isNullOrEmpty()) {
+                            distinctEvents.forEach { event ->
+                                if (event.kind.isNotEmpty()) {
+                                    Text(text = event.kind)
+                                } else {
+                                    Text(text = "Keine Einträge")
+                                }
+                            }
+                        } else {
+                            Text(text = "Keine Einträge")
+                        }
+                    } else {
+                        Text(text = "Keine Einträge")
+                    }
                 }
             }
         )
@@ -217,17 +238,12 @@ fun getNameAbbreviation(fullName: String): String {
         "Gelbe Tonne" -> "GbT"
         "Papier 2-wöchig" -> "P2W"
         "Papier 4-wöchig" -> "P4W"
-        "Papier 8-wöchig", "Papier 8-w\u00f6chig, Gebiet A", "Papier 8-w\u00f6chig, Gebiet B" -> "P8W"
+        "Papier 8-wöchig" -> "P8W"
         "Restmüll halbjährig" -> "RHb"
-        "Restm\u00fcll 4-w\u00f6chig in Zone Margarethen am Moos","Restmüll 4-wöchig", "Restm\u00fcll 4-w\u00f6chig in Zone Enzersdorf" -> "R4W"
-        "Restm\u00fcll 2-w\u00f6chig halbj\u00e4hrig, Wilfleinsdorf" -> "R2W"
-        "Restm\u00fcll 2-w\u00f6chig", "Restm\u00fcll 2-w\u00f6chig halbj\u00e4hrig", "Restm\u00fcll 2-w\u00f6chig, Wilfleinsdorf" -> "R2W"
+        "Restmüll 4-wöchig" -> "R4W"
+        "Restm\u00fcll 2-w\u00f6chig" -> "R2W"
         "Restm\u00fcll 1-w\u00f6chig" -> "R1W"
-        "Papier 8-w\u00f6chig in Zone Margarethen am Moos", "Restm\u00fcll 8-w\u00f6chig und halbj\u00e4hrig, Wilfleinsdorf" -> "R8W"
-        "Restm\u00fcll, Gebiet A" -> "RA"
-        "Restm\u00fcll, Gebiet B" -> "RB"
-        "Restm\u00fcll, Gebiet C" -> "RC"
-        "Gelber Sack", "Gelber Sack, Gebiet C", "Gelber Sack, Gebiet A", "Gelber Sack, Gebiet B" -> "GS"
+        "Gelber Sack" -> "GS"
         else -> fullName
     }
 }

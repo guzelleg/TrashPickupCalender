@@ -42,14 +42,18 @@ enum class FilterScreen(@StringRes val title: Int) {
 @SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NavHost(
+fun StartFilterScreen(
     viewModel: MainViewModel,
     modifier: Modifier = Modifier,
 ) {
     val navController = rememberNavController()
-    Scaffold()
+    val searchUiState by viewModel.searchUiState.collectAsState()
+
+    val isLoading by viewModel.isLoading.collectAsState()
+    if (isLoading) {
+        CircularProgressIndicator()
+    } else { Scaffold()
     { innerPadding ->
-        val searchUiState by viewModel.searchUiState.collectAsState()
         val startDestination: String = when {
             (searchUiState.currentSelectedTown != null && searchUiState.currentSelectedTown!!.regions.isEmpty()) -> FilterScreen.Details.name
             (searchUiState.currentSelectedTown != null && searchUiState.currentSelectedTown!!.regions.isNotEmpty() && searchUiState.currentSelectedStreet != null) -> FilterScreen.Details.name
@@ -102,6 +106,7 @@ fun NavHost(
                     })
             }
         }
+    }
     }
 }
 

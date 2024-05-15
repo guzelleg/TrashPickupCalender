@@ -30,8 +30,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor (
-    private val addressService: AddressService
+    private val addressService: AddressService,
 ): ViewModel() {
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
     private val _searchText = MutableStateFlow("")
     val searchText = _searchText.asStateFlow()
 
@@ -146,28 +150,53 @@ class MainViewModel @Inject constructor (
             addressService.deleteAddress()
             setSavedAddress()
         }
+
     init {
         viewModelScope.launch {
-            setSavedAddress()
-            val userTown = if (_savedAddress.value.townName != "" && _savedAddress.value.townName != null) getTownFromUserData(
-                _savedAddress.value
-            ) else null
-            val userStreet = if (_savedAddress.value.streetName != "" && _savedAddress.value.streetName != null) {
-                getRegionFromUserData(
-                    _savedAddress.value
-                )
-            } else null
-            _searchUiState.update { currentState ->
-                currentState.copy(
-                    currentSelectedStreet = userStreet,
-                    currentSelectedTown = userTown
-                )
-            }
-            if (userStreet == null) {
-                setEvents(userTown?.let { getEventsByTown(it) })
-            }
-            else
-                setEvents(userTown?.let { getEventsByTownAndRegion(it, userStreet) })
+            initializeSavedAddress()
+            initializeSearchUiState()
+            initializeEvents()
         }
+    }
+
+    private suspend fun initializeSavedAddress() {
+        _isLoading.value = true
+        _savedAddress.update {
+            addressService.getAddressFromDataStore().first()
+        }
+        _isLoading.value = false
+    }
+
+    private fun initializeSearchUiState() {
+        val userTown = getTownFromSavedAddress()
+        val userStreet = getRegionFromSavedAddress()
+
+        _searchUiState.update { currentState ->
+            currentState.copy(
+                currentSelectedStreet = userStreet,
+                currentSelectedTown = userTown
+            )
+        }
+    }
+
+    private fun initializeEvents() {
+        val userTown = getTownFromSavedAddress()
+        val userStreet = getRegionFromSavedAddress()
+
+        if (userStreet == null) {
+            setEvents(userTown?.let { getEventsByTown(it) })
+        } else {
+            setEvents(userTown?.let { getEventsByTownAndRegion(it, userStreet) })
+        }
+    }
+
+    private fun getTownFromSavedAddress(): Town? {
+        return if (_savedAddress.value.townName.isNullOrBlank()) null
+        else getTownFromUserData(_savedAddress.value)
+    }
+
+    private fun getRegionFromSavedAddress(): Region? {
+        return if (_savedAddress.value.streetName.isNullOrBlank()) null
+        else getRegionFromUserData(_savedAddress.value)
     }
 }
