@@ -6,7 +6,7 @@ plugins {
     id ("kotlinx-serialization")
     id ("kotlin-kapt")
     id ("dagger.hilt.android.plugin")
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.20"
 }
 
 android {
@@ -48,12 +48,26 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.3"
+        kotlinCompilerExtensionVersion = "1.5.4"
     }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
+    }
+}
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+    arguments {
+        arg("kapt.use.worker.api", "false")
+    }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.internal.KaptGenerateStubsTask>().configureEach {
+    kotlinOptions {
+        jvmTarget = "17"
     }
 }
 
