@@ -22,9 +22,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.guzel1018.trashpickupcalender.clickable
 import com.guzel1018.trashpickupcalender.model.Region
+import kotlinx.serialization.InternalSerializationApi
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, InternalSerializationApi::class)
 @Composable
 fun StreetFilterScreen(
     viewModel: MainViewModel,

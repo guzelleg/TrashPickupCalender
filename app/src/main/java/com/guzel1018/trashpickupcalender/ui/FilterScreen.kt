@@ -31,6 +31,7 @@ import com.guzel1018.trashpickupcalender.clickable
 import com.guzel1018.trashpickupcalender.model.Town
 import com.guzel1018.trashpickupcalender.utils.getEventsByTown
 import com.guzel1018.trashpickupcalender.utils.getEventsByTownAndRegion
+import kotlinx.serialization.InternalSerializationApi
 
 enum class FilterScreen(@StringRes val title: Int) {
     Start(title = R.string.app_name),
@@ -40,7 +41,7 @@ enum class FilterScreen(@StringRes val title: Int) {
 
 
 @SuppressLint("StateFlowValueCalledInComposition")
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, InternalSerializationApi::class)
 @Composable
 fun StartFilterScreen(
     viewModel: MainViewModel,
@@ -110,7 +111,7 @@ fun StartFilterScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, InternalSerializationApi::class)
 @Composable
 fun FilterScreen(
     viewModel: MainViewModel,

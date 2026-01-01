@@ -1,9 +1,9 @@
 package com.guzel1018.trashpickupcalender.ui
 
 import androidx.lifecycle.ViewModel
+import kotlinx.serialization.InternalSerializationApi
 import androidx.lifecycle.viewModelScope
 import com.guzel1018.trashpickupcalender.model.Town
-import com.guzel1018.trashpickupcalender.utils.getTowns
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -19,6 +19,7 @@ import com.guzel1018.trashpickupcalender.utils.getEventsByTownAndRegion
 import com.guzel1018.trashpickupcalender.utils.getRegionFromUserData
 import com.guzel1018.trashpickupcalender.utils.getRegions
 import com.guzel1018.trashpickupcalender.utils.getTownFromUserData
+import com.guzel1018.trashpickupcalender.utils.getTowns
 import com.kizitonwose.calendar.core.CalendarDay
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
@@ -28,6 +29,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(InternalSerializationApi::class)
 @HiltViewModel
 class MainViewModel @Inject constructor (
     private val addressService: AddressService,

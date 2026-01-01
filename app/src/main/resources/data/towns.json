@@ -211,7 +211,7 @@
         "name": "Dr. Lang-Weg",
         "rm": "A",
         "p": "B",
-        "gs": "B"
+        "gs": "A"
       },
       {
         "name": "Dr. Wlasak-Stra\u00dfe",
@@ -263,7 +263,7 @@
       },
       {
         "name": "Fichtenweg",
-        "rm": null,
+        "rm": "A",
         "p": "B",
         "gs": "B"
       },
@@ -311,7 +311,7 @@
       },
       {
         "name": "F\u00f6hrenweg",
-        "rm": null,
+        "rm": "A",
         "p": "B",
         "gs": "B"
       },
@@ -529,7 +529,7 @@
         "name": "Kurze-Gasse",
         "rm": "B",
         "p": "A",
-        "gs": "B"
+        "gs": "A"
       },
       {
         "name": "K\u00f6nig Etzel-Gasse",
@@ -565,13 +565,13 @@
         "name": "Marbodweg",
         "rm": "A",
         "p": "B",
-        "gs": "B"
+        "gs": "A"
       },
       {
         "name": "Marc Aurel-Gasse",
         "rm": "A",
         "p": "B",
-        "gs": "B"
+        "gs": "A"
       },
       {
         "name": "Margarethagasse",
@@ -815,7 +815,7 @@
       },
       {
         "name": "Tennisplatz",
-        "rm": null,
+        "rm": "C",
         "p": "A",
         "gs": "B"
       },

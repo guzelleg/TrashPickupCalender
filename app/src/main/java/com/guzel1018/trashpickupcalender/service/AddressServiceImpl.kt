@@ -5,13 +5,17 @@ import com.guzel1018.trashpickupcalender.data.UserAddress
 import com.guzel1018.trashpickupcalender.model.Region
 import com.guzel1018.trashpickupcalender.model.Town
 import kotlinx.coroutines.flow.Flow
+import kotlinx.serialization.InternalSerializationApi
 import javax.inject.Inject
 
+@OptIn(InternalSerializationApi::class)
 interface AddressService {
     fun getAddressFromDataStore(): Flow<UserAddress>
     suspend fun addAddress(town: Town, street: Region?)
     suspend fun deleteAddress()
 }
+
+@OptIn(InternalSerializationApi::class)
 class AddressServiceImpl @Inject constructor(
     private val DataStoreManager: DataStoreManager
 ) : AddressService {

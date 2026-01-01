@@ -64,7 +64,7 @@ import java.time.YearMonth
 fun EventCalenderScreen(
     viewModel: MainViewModel,
     navController: NavHostController,
-    ) {
+) {
     val currentDate = remember { LocalDate.now() }
     val currentMonth = remember { YearMonth.now() }
     val startMonth = remember { currentMonth.minusMonths(500) }
@@ -236,9 +236,10 @@ fun getNameAbbreviation(fullName: String): String {
     return when (fullName) {
         "Bio", "Bioabfall, Wilfleinsdorf", "Bioabfall, Gebiet A", "Bioabfall, Gebiet B" -> "bio"
         "Gelbe Tonne" -> "GbT"
-        "Papier 2-wöchig" -> "P2W"
+        "Papier 2-wöchig","Papier 2-w\u00f6chentlich" -> "P2W"
         "Papier 4-wöchig" -> "P4W"
-        "Papier 8-wöchig" -> "P8W"
+        "Papier 8-wöchig", "Papier 8-w\u00f6chentlich" -> "P8W"
+        "Restm\u00fcll" -> "RM"
         "Restmüll halbjährig" -> "RHb"
         "Restmüll 4-wöchig" -> "R4W"
         "Restm\u00fcll 2-w\u00f6chig" -> "R2W"
@@ -250,11 +251,10 @@ fun getNameAbbreviation(fullName: String): String {
 
 fun getBackgroundColor(name: String): Color {
     return when (name) {
-        "Bio" -> Color.Green
-        "Gelbe Tonne", "Gelber Sack" -> Color.Yellow
-        "Papier 2-wöchig", "Papier 4-wöchig", "Papier 8-wöchig" -> Color.Red
-        "Restm\u00fcll 4-w\u00f6chig" -> Color.Gray
-        else -> Color.White
+        "Gelber Sack" -> Color.Yellow
+        "Papier 2-wöchig", "Papier 4-wöchig", "Papier 8-wöchig", "Papier 8-w\u00f6chentlich" -> Color.Red
+        "Restm\u00fcll 4-w\u00f6chig", "Restm\u00fcll" -> Color.Cyan
+        else -> Color.Transparent
     }
 }
 
@@ -306,8 +306,8 @@ fun CalendarScreen(
                 Text(text = "P2W - Papier 2-wöchig", Modifier.background(Color.Red))
                 Text(text = "P4W - Papier 4-wöchig", Modifier.background(Color.Red))
                 Text(text = "P8W - Papier 8-wöchig",Modifier.background(Color.Red))
-                Text(text = "RHb -Restmüll halbjährig", Modifier.background(Color.Gray))
-                Text(text = "R4W - Restmüll 4-wöchig", Modifier.background(Color.Gray))
+                Text(text = "RHb -Restmüll halbjährig", Modifier.background(Color.Cyan))
+                Text(text = "R4W - Restmüll 4-wöchig", Modifier.background(Color.Cyan))
             }},
             dismissButton = {
                 Button(onClick = { showInfo = false }) {

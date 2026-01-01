@@ -7,11 +7,12 @@ import com.guzel1018.trashpickupcalender.model.DatedCalendarItem
 import com.guzel1018.trashpickupcalender.model.Region
 import com.guzel1018.trashpickupcalender.model.Town
 import com.guzel1018.trashpickupcalender.utils.DataTransformations.getCalendarItems
-import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.json.Json
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+@OptIn(InternalSerializationApi::class)
 object DataTransformations {
 
     private fun getEvents(): List<CalendarItem> {
@@ -35,6 +36,7 @@ object DataTransformations {
     }
 }
 
+@OptIn(InternalSerializationApi::class)
 fun getTowns(): List<Town> {
     val resourceAsStream =
         DataTransformations::class.java.classLoader.getResourceAsStream("data/towns.json")
@@ -42,6 +44,7 @@ fun getTowns(): List<Town> {
     return Json.decodeFromString(resourceAsString)
 }
 
+@OptIn(InternalSerializationApi::class)
 fun getRegions(town:Town) : List<Region> {
    val selectedTown = getTowns().first {
        it == town
@@ -49,29 +52,31 @@ fun getRegions(town:Town) : List<Region> {
     return selectedTown.regions
 }
 
+@OptIn(InternalSerializationApi::class)
 fun getEventsByTown(town:Town): List<DatedCalendarItem> {
     return getCalendarItems().filter { it.townId == town.town_id }
 }
 
+@OptIn(InternalSerializationApi::class)
 fun getEventsByTownAndRegion(town:Town, region: Region) : List<DatedCalendarItem> {
    return getEventsByTown(town)
-        .filter { it.rm == region.rm && it.p == region.p && it.gs == region.gs}
-        .map {
-            DatedCalendarItem(
-                gs = it.gs,
-                kind = it.kind,
-                p = it.p,
-                rm = it.rm,
-                date = it.date,
-                townId = it.townId
-            )
+        .filter { item ->
+            // Determine which waste type we're dealing with based on which field is non-null
+            when {
+                item.rm != null -> item.rm == region.rm  // Restmüll: filter by rm only
+                item.p != null -> item.p == region.p      // Papier: filter by p only
+                item.gs != null -> item.gs == region.gs   // Gelber Sack: filter by gs only
+                else -> true  // If all are null (e.g., Bio, Gelbe Tonne), include for all regions
+            }
         }
 }
 
+@OptIn(InternalSerializationApi::class)
 fun getTownFromUserData(userAddress: UserAddress): Town {
     return getTowns().first { it.name == userAddress.townName }
 }
 
+@OptIn(InternalSerializationApi::class)
 fun getRegionFromUserData(userAddress: UserAddress): Region {
     return getTowns().first { it.name == userAddress.townName }.regions.first {
         it.name == userAddress.streetName

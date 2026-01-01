@@ -1,12 +1,10 @@
-import com.android.build.api.dsl.LintOptions
-
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id ("kotlinx-serialization")
     id ("kotlin-kapt")
     id ("dagger.hilt.android.plugin")
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.20"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.22"
 }
 
 android {
@@ -28,13 +26,25 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Optimize debug builds for faster installation
+            isMinifyEnabled = false
+            isShrinkResources = false
+        }
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
        lint{
            checkReleaseBuilds = false
        }
+    }
+    
+    splits {
+        abi {
+            isEnable = false
+        }
     }
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
@@ -48,11 +58,14 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.4"
+        kotlinCompilerExtensionVersion = "1.5.10"
     }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            // Exclude unnecessary files to reduce APK size
+            excludes += "/META-INF/*.kotlin_module"
+            excludes += "/META-INF/*.version"
         }
     }
 }
