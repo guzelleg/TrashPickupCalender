@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.guzel1018.trashpickupcalender.R
+import com.guzel1018.trashpickupcalender.data.UserAddress
 import com.guzel1018.trashpickupcalender.model.DatedCalendarItem
 import com.guzel1018.trashpickupcalender.rememberFirstMostVisibleMonth
 import com.guzel1018.trashpickupcalender.utils.displayText
@@ -62,7 +63,11 @@ import java.time.YearMonth
 @SuppressLint("StateFlowValueCalledInComposition", "CoroutineCreationDuringComposition")
 @Composable
 fun EventCalenderScreen(
-    viewModel: MainViewModel,
+    events: List<DatedCalendarItem>?,
+    selectedDay: CalendarDay?,
+    onDaySelected: (CalendarDay) -> Unit,
+    savedAddress: UserAddress,
+    onDeleteSavedData: () -> Unit,
     navController: NavHostController,
 ) {
     val currentDate = remember { LocalDate.now() }
@@ -70,12 +75,11 @@ fun EventCalenderScreen(
     val startMonth = remember { currentMonth.minusMonths(500) }
     val endMonth = remember { currentMonth.plusMonths(500) }
     val daysOfWeek = remember { daysOfWeek(firstDayOfWeek = DayOfWeek.MONDAY) }
-    val events by viewModel.events.collectAsState()
 
-    val selectedCalendarDay by viewModel.selectedDay.collectAsState()
     var showDetails by remember { mutableStateOf(false) }
+    val selectedCalendarDay = selectedDay
 
-    if (showDetails && selectedCalendarDay !=null) {
+    if (showDetails && selectedCalendarDay != null) {
         AlertDialog(
             onDismissRequest = { },
             dismissButton = {
@@ -83,12 +87,15 @@ fun EventCalenderScreen(
                     showDetails = false
                 }) {
                     Text(text = "Schließen")
-                } },
+                }
+            },
             confirmButton = { },
             text = {
                 Column {
-                    Text(text = "${selectedCalendarDay!!.date.month} ${selectedCalendarDay!!.date.dayOfMonth},  ${selectedCalendarDay!!.date.year}",
-                        fontSize = 16.sp)
+                    Text(
+                        text = "${selectedCalendarDay!!.date.month} ${selectedCalendarDay!!.date.dayOfMonth},  ${selectedCalendarDay!!.date.year}",
+                        fontSize = 16.sp
+                    )
                     Text(text = "")
 
                     val selectedDate = selectedCalendarDay?.date
@@ -130,7 +137,7 @@ fun EventCalenderScreen(
         val visibleMonth = rememberFirstMostVisibleMonth(state, viewportPercent = 90f)
 
         CalendarScreen(
-            modifier = Modifier.padding( horizontal = 8.dp),
+            modifier = Modifier.padding(horizontal = 8.dp),
             currentMonth = visibleMonth.yearMonth,
             goToPrevious = {
                 coroutineScope.launch {
@@ -142,7 +149,8 @@ fun EventCalenderScreen(
                     state.animateScrollToMonth(state.firstVisibleMonth.yearMonth.nextMonth)
                 }
             },
-            viewModel = viewModel,
+            savedAddress = savedAddress,
+            onDeleteSavedData = onDeleteSavedData,
             navController = navController
         )
         HorizontalCalendar(
@@ -154,11 +162,10 @@ fun EventCalenderScreen(
                     day = day,
                     events = events?.groupBy { it.date }?.get(day.date)?.distinctBy { it.kind },
                     isToday = day.date == currentDate,
-                onClick =
-                {
-                    viewModel.setSelectedDay(it)
-                    showDetails = true
-                }
+                    onClick = {
+                        onDaySelected(it)
+                        showDetails = true
+                    }
                 )
             },
             monthHeader = {
@@ -236,7 +243,7 @@ fun getNameAbbreviation(fullName: String): String {
     return when (fullName) {
         "Bio", "Bioabfall, Wilfleinsdorf", "Bioabfall, Gebiet A", "Bioabfall, Gebiet B" -> "bio"
         "Gelbe Tonne" -> "GbT"
-        "Papier 2-wöchig","Papier 2-w\u00f6chentlich" -> "P2W"
+        "Papier 2-wöchig", "Papier 2-w\u00f6chentlich" -> "P2W"
         "Papier 4-wöchig" -> "P4W"
         "Papier 8-wöchig", "Papier 8-w\u00f6chentlich" -> "P8W"
         "Restm\u00fcll" -> "RM"
@@ -265,7 +272,8 @@ fun CalendarScreen(
     currentMonth: YearMonth,
     goToPrevious: () -> Unit,
     goToNext: () -> Unit,
-    viewModel: MainViewModel,
+    savedAddress: UserAddress,
+    onDeleteSavedData: () -> Unit,
     navController: NavHostController,
 ) {
 
@@ -275,74 +283,78 @@ fun CalendarScreen(
             onDismissRequest = { showDialog = false },
             confirmButton = {
                 Button(
-                    onClick = { showDialog = false
+                    onClick = {
+                        showDialog = false
                         navController.navigate(FilterScreen.Start.name)
-                        viewModel.deleteSavedData()
+                        onDeleteSavedData()
                     }) {
                     Text(text = "Ja, ändern")
                 }
             },
             dismissButton = {
-                Button(onClick = { showDialog = false
+                Button(onClick = {
+                    showDialog = false
 
                 }) {
                     Text(text = "Nein, hier bleiben")
                 }
             },
-            text =  {Text(text = "Gewählte Gemeinde ändern?")},
+            text = { Text(text = "Gewählte Gemeinde ändern?") },
         )
     }
 
     var showInfo by remember { mutableStateOf(false) }
 
     if (showInfo) {
-        AlertDialog(onDismissRequest = {}, confirmButton = {},
-            text = { Column{
-                Text(text = "Abkürzungen:")
-                Text(text = "")
-                Text(text = "bio - Biomüll", Modifier.background(Color.Green))
-                Text(text = "GbT - Gelbe Tonne", Modifier.background(Color.Yellow))
-                Text(text = "GS - Gelber Sack", Modifier.background(Color.Yellow))
-                Text(text = "P2W - Papier 2-wöchig", Modifier.background(Color.Red))
-                Text(text = "P4W - Papier 4-wöchig", Modifier.background(Color.Red))
-                Text(text = "P8W - Papier 8-wöchig",Modifier.background(Color.Red))
-                Text(text = "RHb -Restmüll halbjährig", Modifier.background(Color.Cyan))
-                Text(text = "R4W - Restmüll 4-wöchig", Modifier.background(Color.Cyan))
-            }},
+        AlertDialog(
+            onDismissRequest = {}, confirmButton = {},
+            text = {
+                Column {
+                    Text(text = "Abkürzungen:")
+                    Text(text = "")
+                    Text(text = "bio - Biomüll", Modifier.background(Color.Green))
+                    Text(text = "GbT - Gelbe Tonne", Modifier.background(Color.Yellow))
+                    Text(text = "GS - Gelber Sack", Modifier.background(Color.Yellow))
+                    Text(text = "P2W - Papier 2-wöchig", Modifier.background(Color.Red))
+                    Text(text = "P4W - Papier 4-wöchig", Modifier.background(Color.Red))
+                    Text(text = "P8W - Papier 8-wöchig", Modifier.background(Color.Red))
+                    Text(text = "RHb -Restmüll halbjährig", Modifier.background(Color.Cyan))
+                    Text(text = "R4W - Restmüll 4-wöchig", Modifier.background(Color.Cyan))
+                }
+            },
             dismissButton = {
                 Button(onClick = { showInfo = false }) {
                     Text(text = "Schließen")
                 }
             },
-                )
+        )
     }
 
     Column {
-        viewModel.savedAddress.let {
+        Text(
+            text = "${savedAddress.townName}",
+            fontSize = 25.sp, modifier = Modifier.padding(start = 10.dp, top = 10.dp)
+        )
+        if (savedAddress.streetName != "") {
             Text(
-                text = "${it.value.townName}",
-                fontSize = 25.sp, modifier = Modifier.padding(start = 10.dp, top = 10.dp)
-            )
-            if (it.value.streetName != "") {Text(
-                text = "${viewModel.savedAddress.value.streetName}",
+                text = "${savedAddress.streetName}",
                 fontSize = 18.sp, modifier = Modifier.padding(start = 10.dp)
-            )}
+            )
         }
 
-        Row(horizontalArrangement = Arrangement.End
-        ) {
-            TextButton(
-                onClick = { showDialog = true },
-
-                ) {
+        Row(horizontalArrangement = Arrangement.End) {
+            TextButton(onClick = { showDialog = true }) {
                 Text(text = "Andere Gemeinde auswählen")
             }
 
-            TextButton(
-                onClick = { showInfo = true },
-
-                ) {
+            TextButton(onClick = { showInfo = true }) {
                 Text(text = "Info")
+            }
+
+            TextButton(onClick = { 
+                navController.navigate(FilterScreen.Reminders.name)
+            }) {
+                Text(text = "Errinerungen setzen")
             }
         }
     }

@@ -28,12 +28,14 @@ import kotlinx.serialization.InternalSerializationApi
 @OptIn(ExperimentalMaterial3Api::class, InternalSerializationApi::class)
 @Composable
 fun StreetFilterScreen(
-    viewModel: MainViewModel,
+    searchText: String,
+    regions: List<Region>,
+    isSearching: Boolean,
+    onSearchTextChange: (String) -> Unit,
+    onClearSearchText: () -> Unit,
+    onSetSelectedRegion: (Region) -> Unit,
     onRegionClick: (Region) -> Unit
 ) {
-    val searchText by viewModel.searchStreetText.collectAsState()
-    val regions by viewModel.regions.collectAsState()
-    val isSearching by viewModel.isSearching.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -42,7 +44,7 @@ fun StreetFilterScreen(
         OutlinedTextField(
             value = searchText,
             label = { Text(text = "Straße finden") },
-            onValueChange = viewModel::onStreetSearchTextChange,
+            onValueChange = onSearchTextChange,
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -65,8 +67,8 @@ fun StreetFilterScreen(
                             .fillMaxSize()
                             .padding(vertical = 16.dp)
                             .clickable {
-                                viewModel.clearStreetSearchText()
-                                viewModel.setSelectedRegion(region)
+                                onClearSearchText()
+                                onSetSelectedRegion(region)
                                 onRegionClick(region)
                             }
                     )

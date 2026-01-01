@@ -3,6 +3,7 @@ package com.guzel1018.trashpickupcalender.ui
 import androidx.lifecycle.ViewModel
 import kotlinx.serialization.InternalSerializationApi
 import androidx.lifecycle.viewModelScope
+import com.guzel1018.trashpickupcalender.data.ReminderPreferences
 import com.guzel1018.trashpickupcalender.model.Town
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -55,9 +56,19 @@ class MainViewModel @Inject constructor (
 
     private val _selectedDay: MutableStateFlow<CalendarDay?> = MutableStateFlow(null)
     val selectedDay = _selectedDay.asStateFlow()
+    
+    private val _reminderPreferences = MutableStateFlow(ReminderPreferences())
+    val reminderPreferences: StateFlow<ReminderPreferences> = _reminderPreferences.asStateFlow()
 
     fun setSelectedDay(day: CalendarDay?) {
         _selectedDay.value = day
+    }
+    
+    fun saveReminderPreferences(dayOption: String, hour: Int, minute: Int) {
+        viewModelScope.launch {
+            addressService.saveReminderPreferences(dayOption, hour, minute)
+            _reminderPreferences.value = ReminderPreferences(dayOption, hour, minute)
+        }
     }
 
     private val _towns = MutableStateFlow(getTowns())
@@ -158,6 +169,7 @@ class MainViewModel @Inject constructor (
             initializeSavedAddress()
             initializeSearchUiState()
             initializeEvents()
+            initializeReminderPreferences()
         }
     }
 
@@ -167,6 +179,12 @@ class MainViewModel @Inject constructor (
             addressService.getAddressFromDataStore().first()
         }
         _isLoading.value = false
+    }
+    
+    private suspend fun initializeReminderPreferences() {
+        _reminderPreferences.update {
+            addressService.getReminderPreferences().first()
+        }
     }
 
     private fun initializeSearchUiState() {

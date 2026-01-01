@@ -36,7 +36,8 @@ import kotlinx.serialization.InternalSerializationApi
 enum class FilterScreen(@StringRes val title: Int) {
     Start(title = R.string.app_name),
     StreetFilter(title = R.string.street_filter_title),
-    Details(title = R.string.details_screen_title)
+    Details(title = R.string.details_screen_title),
+    Reminders(title = R.string.app_name)
 }
 
 
@@ -49,8 +50,17 @@ fun StartFilterScreen(
 ) {
     val navController = rememberNavController()
     val searchUiState by viewModel.searchUiState.collectAsState()
-
     val isLoading by viewModel.isLoading.collectAsState()
+    val searchText by viewModel.searchText.collectAsState()
+    val towns by viewModel.towns.collectAsState()
+    val isSearching by viewModel.isSearching.collectAsState()
+    val searchStreetText by viewModel.searchStreetText.collectAsState()
+    val regions by viewModel.regions.collectAsState()
+    val events by viewModel.events.collectAsState()
+    val selectedDay by viewModel.selectedDay.collectAsState()
+    val savedAddress by viewModel.savedAddress.collectAsState()
+    val reminderPreferences by viewModel.reminderPreferences.collectAsState()
+
     if (isLoading) {
         CircularProgressIndicator()
     } else { Scaffold()
@@ -69,7 +79,12 @@ fun StartFilterScreen(
         ) {
             composable(FilterScreen.Start.name) {
                 FilterScreen(
-                    viewModel = viewModel,
+                    searchText = searchText,
+                    towns = towns,
+                    isSearching = isSearching,
+                    onSearchTextChange = viewModel::onSearchTextChange,
+                    onClearSearchText = viewModel::clearSearchText,
+                    onSetSelectedTown = viewModel::setSelectedTown,
                     onTownClick = {
                         if (it.regions.isEmpty()) {
                             viewModel.setEvents(getEventsByTown(it))
@@ -86,12 +101,25 @@ fun StartFilterScreen(
             composable(
                 FilterScreen.Details.name
             ) {
-                EventCalenderScreen(viewModel, navController)
+                EventCalenderScreen(
+                    events = events,
+                    selectedDay = selectedDay,
+                    onDaySelected = viewModel::setSelectedDay,
+                    savedAddress = savedAddress,
+                    onDeleteSavedData = viewModel::deleteSavedData,
+                    navController = navController
+                )
             }
             composable(
                 FilterScreen.StreetFilter.name
             ) {
-                StreetFilterScreen(viewModel = viewModel,
+                StreetFilterScreen(
+                    searchText = searchStreetText,
+                    regions = regions,
+                    isSearching = isSearching,
+                    onSearchTextChange = viewModel::onStreetSearchTextChange,
+                    onClearSearchText = viewModel::clearStreetSearchText,
+                    onSetSelectedRegion = viewModel::setSelectedRegion,
                     onRegionClick = {
                         if (searchUiState.currentSelectedTown != null) {
                             viewModel.setEvents(
@@ -104,7 +132,19 @@ fun StartFilterScreen(
                         navController.navigate(FilterScreen.Details.name) {
                             popUpTo(FilterScreen.Details.name)
                         }
-                    })
+                    }
+                )
+            }
+            composable(
+                FilterScreen.Reminders.name
+            ) {
+                RemindersScreen(
+                    savedAddress = savedAddress,
+                    navController = navController,
+                    events = events,
+                    reminderPreferences = reminderPreferences,
+                    onSaveReminderPreferences = viewModel::saveReminderPreferences
+                )
             }
         }
     }
@@ -114,13 +154,14 @@ fun StartFilterScreen(
 @OptIn(ExperimentalMaterial3Api::class, InternalSerializationApi::class)
 @Composable
 fun FilterScreen(
-    viewModel: MainViewModel,
+    searchText: String,
+    towns: List<Town>,
+    isSearching: Boolean,
+    onSearchTextChange: (String) -> Unit,
+    onClearSearchText: () -> Unit,
+    onSetSelectedTown: (Town) -> Unit,
     onTownClick: (Town) -> Unit
 ) {
-    val searchText by viewModel.searchText.collectAsState()
-    val towns by viewModel.towns.collectAsState()
-    val isSearching by viewModel.isSearching.collectAsState()
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -133,7 +174,7 @@ fun FilterScreen(
         OutlinedTextField(
             value = searchText,
             label = { Text(text = "Gemeinde wählen") },
-            onValueChange = viewModel::onSearchTextChange,
+            onValueChange = onSearchTextChange,
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -156,8 +197,8 @@ fun FilterScreen(
                             .fillMaxSize()
                             .padding(vertical = 16.dp)
                             .clickable {
-                                viewModel.clearSearchText()
-                                viewModel.setSelectedTown(town)
+                                onClearSearchText()
+                                onSetSelectedTown(town)
                                 onTownClick(town)
                             }
                     )

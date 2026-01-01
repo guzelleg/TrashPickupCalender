@@ -1,6 +1,7 @@
 package com.guzel1018.trashpickupcalender.service
 
 import com.guzel1018.trashpickupcalender.data.DataStoreManager
+import com.guzel1018.trashpickupcalender.data.ReminderPreferences
 import com.guzel1018.trashpickupcalender.data.UserAddress
 import com.guzel1018.trashpickupcalender.model.Region
 import com.guzel1018.trashpickupcalender.model.Town
@@ -13,6 +14,8 @@ interface AddressService {
     fun getAddressFromDataStore(): Flow<UserAddress>
     suspend fun addAddress(town: Town, street: Region?)
     suspend fun deleteAddress()
+    suspend fun saveReminderPreferences(dayOption: String, hour: Int, minute: Int)
+    fun getReminderPreferences(): Flow<ReminderPreferences>
 }
 
 @OptIn(InternalSerializationApi::class)
@@ -27,4 +30,10 @@ class AddressServiceImpl @Inject constructor(
     }
 
     override suspend fun deleteAddress() = DataStoreManager.deleteAddress()
+    
+    override suspend fun saveReminderPreferences(dayOption: String, hour: Int, minute: Int) =
+        DataStoreManager.saveReminderPreferences(dayOption, hour, minute)
+    
+    override fun getReminderPreferences(): Flow<ReminderPreferences> =
+        DataStoreManager.getReminderPreferences()
 }
